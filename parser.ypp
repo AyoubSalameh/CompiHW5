@@ -1,0 +1,151 @@
+%{
+    #include <iostream>
+    #include "parser.h"
+    #include "hw3_output.hpp"
+    using namespace std;
+    int yylex();
+    extern char* yytext;
+    extern int yylineno;
+    extern table_stack table;
+    void yyerror(const char*);
+%}
+
+
+
+
+%nonassoc VOID
+%nonassoc INT
+%nonassoc BYTE
+%nonassoc BOOL
+%nonassoc OVERRIDE
+
+%nonassoc TRUE
+%nonassoc FALSE
+%nonassoc RETURN
+%nonassoc IF
+
+%nonassoc WHILE
+%nonassoc BREAK
+%nonassoc CONTINUE
+%nonassoc SC
+%nonassoc COMMA
+%nonassoc ID
+%nonassoc NUM
+%nonassoc STRING
+%nonassoc B
+
+%right ASSIGN
+%left OR
+%left AND
+
+%left EQUALITY
+%left RELATION
+
+%left PLUS_MINUS
+%left MUL_DIV
+
+%right NOT
+
+%left LPAREN
+%left RPAREN
+%left LBRACE
+%left RBRACE
+
+%nonassoc ELSE
+
+%%
+Program: Funcs                                                                  {$$ = new Program();}
+        ;
+Funcs: /*epsilon*/                                                              {$$ = new Funcs();}
+     | FuncDecl Funcs                                                           {$$ = new Funcs();}
+     ;
+
+FuncDecl: OverRide RetType ID LPAREN Formals RPAREN {$$ = new FuncDecl(dynamic_cast<OverRide*>($1), dynamic_cast<RetType*>($2), $3, dynamic_cast<Formals*>($5));} LBRACE Statements RBRACE {table.close_scope();}
+        ;
+OverRide: /*epsilon*/                                                           {$$ = new OverRide();}
+        | OVERRIDE                                                              {$$ = new OverRide(true);}
+        ;
+
+RetType: Type                                                                   {$$ = new RetType(dynamic_cast<Type*>($1)->type);}
+       | VOID                                                                   {$$ = new RetType("void");}
+       ;
+
+Formals: /*epsilon*/                                                            {$$ = new Formals();}
+           | FormalsList                                                        {$$ = new Formals(dynamic_cast<FormalsList*>($1),yylineno);}
+       ;
+
+FormalsList: FormalDecl                                                         {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1));}
+           | FormalDecl COMMA FormalsList                                       {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1), dynamic_cast<FormalsList*>($3));}
+           ;
+
+FormalDecl: Type ID                                                             {$$ = new FormalDecl(dynamic_cast<Type*>($1), $2);}
+            ;
+Statements: Statement                                                           {$$ = new Statements(dynamic_cast<Statement*>($1));}
+          | Statements Statement                                                {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
+          ;
+          
+Statement: LBRACE {table.open_scope();} Statements RBRACE                       {$$ = new Statement();
+                                                                                 table.close_scope();}
+          | Type ID SC                                                          {$$ = new Statement(dynamic_cast<Type*>($1), $2);}
+          | Type ID ASSIGN Exp SC                                               {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
+          | ID ASSIGN Exp SC                                                    {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
+          | Call SC                                                             {$$ = new Statement(dynamic_cast<Call*>($1));}
+          | RETURN SC                                                           {$$ = new Statement($1);}
+          | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
+          | IF LPAREN CheckBoolExp RPAREN M Statement                                    {$$ = new Statement(dynamic_cast<Exp*>($3));
+                                                                                 table.close_scope();}
+          | IF LPAREN CheckBoolExp RPAREN M Statement ELSE  {table.close_scope(); table.open_scope();} Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
+                                                                                                                                    table.close_scope();}
+          | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
+                                                                                 table.close_scope();}
+          | BREAK SC                                                            {$$ = new Statement($1);}
+          | CONTINUE SC                                                         {$$ = new Statement($1);}
+          ;
+          
+Call: ID LPAREN ExpList RPAREN                                                  {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
+    | ID LPAREN RPAREN                                                          {$$ = new Call($1);}
+    ;
+    
+ExpList: Exp                                                                    {$$ = new ExpList(dynamic_cast<Exp*>($1));}
+       | Exp COMMA ExpList                                                      {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
+       ;
+       
+Type: INT                                                                       {$$ = new Type("int");}
+    | BYTE                                                                      {$$ = new Type("byte");}
+    | BOOL                                                                      {$$ = new Type("bool");}
+    ;
+    
+Exp: LPAREN Exp RPAREN                                                          {$$ = new Exp(dynamic_cast<Exp*>($2));}
+    | Exp PLUS_MINUS Exp                                                        {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp MUL_DIV Exp                                                           {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | ID                                                                        {$$ = new Exp($1);}
+    | Call                                                                      {$$ = new Exp(dynamic_cast<Call*>($1));}
+    | NUM                                                                       {$$ = new Exp($1, "int");}
+    | NUM B                                                                     {$$ = new Exp($1, $2);}
+    | STRING                                                                    {$$ = new Exp($1, "string");}
+    | TRUE                                                                      {$$ = new Exp($1, "bool");}
+    | FALSE                                                                     {$$ = new Exp($1, "bool");}
+    | NOT Exp                                                                   {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
+    | Exp AND Exp                                                               {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp OR Exp                                                                {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp EQUALITY Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp RELATION Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | LPAREN Type RPAREN Exp                                                    {$$ = new Exp(dynamic_cast<Type*>($2), dynamic_cast<Exp*>($4));}
+    ;
+
+M:                                                                              {table.open_scope();}
+CheckBoolExp: Exp                                                               {check_exp(dynamic_cast<Exp*>($1));}
+
+%%
+
+void yyerror(const char*) {
+    output::errorSyn(yylineno);
+    exit(0);
+}
+
+table_stack table = table_stack();
+int main(){
+    int parse = yyparse();
+    table.final_check();
+    return parse;
+}
