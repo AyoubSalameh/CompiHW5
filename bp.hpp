@@ -10,6 +10,8 @@ using namespace std;
 //for an unconditional branch (which contains only a single label) use FIRST.
 enum BranchLabelIndex {FIRST, SECOND};
 
+typedef vector<pair<int,BranchLabelIndex>> bplist;
+
 class CodeBuffer{
 	CodeBuffer();
 	CodeBuffer(CodeBuffer const&);
@@ -18,6 +20,7 @@ class CodeBuffer{
 	std::vector<std::string> globalDefs;
 public:
 	static CodeBuffer &instance();
+
 
 	// ******** Methods to handle the code section ******** //
 

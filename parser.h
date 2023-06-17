@@ -4,6 +4,9 @@
 #include <vector>
 #include "symbol.h"
 #include "hw3_output.hpp"
+#include "bp.hpp"
+#include "CodeComposer.h"
+
 
 class Node;
 class Statements;
@@ -27,6 +30,7 @@ class FuncDecl;
 #define YYSTYPE Node*
 
 extern char* yytext;
+extern CodeComposer composer;
 
 class Node {
 public:
@@ -61,6 +65,10 @@ public:
 class Exp: public Node {
 public:
     std::string type;
+    std::string reg = "";
+    bplist truelist = {};
+    bplist falselist = {};
+    bplist nextlist = {};
 
     //exp -> (exp)
     Exp(Exp* e) : type(e->type), Node(e->name) {};

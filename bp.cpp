@@ -6,7 +6,40 @@ using namespace std;
 
 bool replace(string& str, const string& from, const string& to, const BranchLabelIndex index);
 
-CodeBuffer::CodeBuffer() : buffer(), globalDefs() {}
+CodeBuffer::CodeBuffer() : buffer(), globalDefs() {
+    //might need to add internal constant and zero_div.str
+    this->emit("@.DIVISION_ERROR = internal constant[23 x i8] c\"Error division by zero\\00\"");
+    this->emit("@.int_specifier = constant [4 x i8] c\"%d\\0A\\00\"");
+    this->emit("@.str_specifier = constant [4 x i8] c\"%s\\0A\\00\"");
+    this->emit("declare i32 @printf(i8*, ...)");
+    this->emit("declare void @exit(i32)");
+
+    //printi
+    this->emit("define void @printi(i32) {");
+    this->emit("%spec_ptr = getelementptr [4 x i8], [4 x i8]* @.int_specifier, i32 0, i32 0");
+    this->emit("call i32 (i8*, ...) @printf(i8* %spec_ptr, i32 %0)");
+    this->emit("ret void");
+    this->emit("}");
+
+    //print
+    this->emit("define void @print(i8*) {");
+    this->emit("%spec_ptr = getelementptr [4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0");
+    this->emit("call i32 (i8*, ...) @printf(i8* %spec_ptr, i8* %0)");
+    this->emit("ret void");
+    this->emit("}");
+
+    //function to check division by zero
+    this->emit("define void @divide_by_zero_check(i32) {");
+    this->emit("%result = icmp eq i32 %0 ,0");
+    this->emit("br i1 %result, label %divided_by_zero, label %end");
+    this->emit("divided_by_zero:");
+    this->emit("%ptr = getelementptr [23 x i8], [23 x i8]* @.DIVISION_ERROR, i32 0, i32 0");
+    this->emit("call i32 (i8*, ...) @print(i8* %ptr)");
+    this->emit("call void @exit(i32 0)");
+    this->emit("end:");
+    this->emit("ret void");
+    this->emit("}");
+}
 
 CodeBuffer &CodeBuffer::instance() {
 	static CodeBuffer inst;//only instance

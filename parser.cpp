@@ -75,14 +75,22 @@ Exp::Exp(Node *op, Exp *e) : Node(op->name) {
 
 Exp::Exp(Node *n, Node *b) : Node(n->name) {
     int num = stoi(n->name);
-    if(num > 255) {
+    if (num > 255) {
         output::errorByteTooLarge(yylineno, n->name);
         exit(0);
     }
     this->type = "byte";
 }
 
-Exp::Exp(Node *n, std::string type) : Node(n->name), type(type) {}
+//exp -> num/string/true/false
+Exp::Exp(Node *n, std::string type) : Node(n->name), type(type) {
+    if(type == "int") {
+        composer.allocateAndEmitNum(this);
+    }
+    if(type == "string") {
+        composer.allocateAndEmitString(this);
+    }
+}
 
 Exp::Exp(Type *t, Exp *e) : Node(t->type) {
     string e_type = e->type;
