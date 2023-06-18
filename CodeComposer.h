@@ -6,6 +6,7 @@
 #include "parser.h"
 
 extern CodeComposer composer;
+extern CodeBuffer buffer;
 
 using namespace std;
 

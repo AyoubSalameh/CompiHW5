@@ -150,10 +150,10 @@ CodeComposer composer = CodeComposer();
 CodeBuffer buffer = CodeBuffer();
 
 int main(){
-    CodeBuffer& buffer = CodeBuffer::instance();
+    
     int parse = yyparse();
     table.final_check();
-    buffer.printGlobalBuffer();
+
     buffer.printCodeBuffer();
     return parse;
 }

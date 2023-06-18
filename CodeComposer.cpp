@@ -68,7 +68,7 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     //TODO might need a different emit for byte
     //this code is for numeric surfing
     //TODO check if we can use trunc by asking
-    if(lhs->type = "byte"){
+    if(lhs->type == "byte"){
         string orig = lhs->reg;
         lhs->reg = new_register();
         buffer.emit(lhs->reg + " = trunc i32 " + orig + " to i8");
@@ -84,7 +84,7 @@ void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     if (op == ">=") op_cmd = "sge";
     if (op == "!=") op_cmd = "ne";
     if (op == "==") op_cmd = "eq";
-    }
+    
     buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
     int hole_address = buffer.emit("br i1 " + lhs->reg + ", label @, label @");
     lhs->truelist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, FIRST));
