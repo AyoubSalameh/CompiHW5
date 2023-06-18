@@ -28,6 +28,7 @@ FormalsList::FormalsList(FormalDecl *dec) : Node(dec->name) {
 
 ///******************************************EXP***************************************************
 
+//exp -> exp binop/relop/and/or exp
 Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
     string type1 = e1->type;
     string type2 = e2->type;
@@ -45,6 +46,7 @@ Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
         else {
             this->type = "int";
         }
+        composer.composeAndEmitBinop(this, e1, operation, e2);
     }
 
     //exp -> exp relop exp
@@ -55,6 +57,7 @@ Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
             exit(0);
         }
         this->type = "bool";
+        composer.composeAndEmitRelop(this, e1, operation, e2);
     }
 
     //exp -> exp AND||OR exp
@@ -75,6 +78,7 @@ Exp::Exp(Node *op, Exp *e) : Node(op->name) {
     this->type = "bool";
 }
 
+//exp -> num b
 Exp::Exp(Node *n, Node *b) : Node(n->name) {
     int num = stoi(n->name);
     if (num > 255) {
@@ -82,6 +86,7 @@ Exp::Exp(Node *n, Node *b) : Node(n->name) {
         exit(0);
     }
     this->type = "byte";
+    composer.allocateAndEmitNumB(this);
 }
 
 //exp -> num/string/true/false

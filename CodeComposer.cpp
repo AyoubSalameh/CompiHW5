@@ -26,6 +26,11 @@ string CodeComposer::new_label() {
     return label;
 }
 
+void CodeComposer::allocateAndEmitNumB(Exp *exp) {
+    exp->reg = this->new_register();
+    buffer.emit(exp->reg + " = add i8 " + exp->name + ", 0");
+}
+
 void CodeComposer::allocateAndEmitNum(Exp *exp) {
     exp->reg = this->new_register();
     buffer.emit(exp->reg + " = add i32 " + exp->name + ", 0");
@@ -44,6 +49,68 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     buffer.emit(str + "_ptr = " + get_reg);
     exp->reg = temp_reg + "_ptr";
 }
+
+void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
+    lhs->reg = new_register();
+    string op_cmd;
+    switch(op) {
+        case("+"):
+            op_cmd = "add";
+            break;
+        case("-"):
+            op_cmd = "sub";
+            break;
+        case("*"):
+            op_cmd = "mul";
+            break;
+        case("/"):
+            if(lhs->type == "byte") {
+                op_cmd == "udiv";
+            } else {
+                op_cmd == "sdiv";
+            }
+            buffer.emit("call void @divide_by_zero_check(i32 " + exp2->reg +")");
+            break;
+    }
+    buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    //this code is for numeric surfing
+    //TODO check if we can use trunc by asking
+    if(lhs->type = "byte"){
+        string orig = lhs->reg;
+        lhs->reg = new_register();
+        buffer.emit(lhs->reg + " = trunc i32 " + orig + " to i8");
+    }
+}
+
+void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
+    lhs->reg = new_register();
+    string op_cmd;
+    switch(op) {
+        case ("<"):
+            op_cmd = "slt";
+            break;
+        case (">"):
+            op_cmd = "sgt";
+            break;
+        case ("<="):
+            op_cmd = "sle";
+            break;
+        case (">="):
+            op_cmd = "sge";
+            break;
+        case ("!="):
+            op_cmd = "ne";
+            break;
+        case ("=="):
+            op_cmd = "eq";
+            break;
+    }
+    buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    int hole_address = buffer.emit("br i1 " + lhs->reg + ", label @, label @");
+    lhs->truelist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, FIRST));
+    lhs->falselist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, SECOND));
+}
+
 
 /*
 void CodeComposer::emitGlobals() {

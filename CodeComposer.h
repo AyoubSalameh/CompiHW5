@@ -22,8 +22,11 @@ public:
     string new_global_register();
     string new_label();
     //void emitGlobals();
+    void allocateAndEmitNumB(Exp* exp);
     void allocateAndEmitNum(Exp* exp);
     void allocateAndEmitString(Exp* exp);
+    void composeAndEmitBinop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
+    void composeAndEmitRelop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
 
 };
 
