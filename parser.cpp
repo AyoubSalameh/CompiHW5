@@ -70,12 +70,14 @@ Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
     }
 }
 
+//exp -> not exp
 Exp::Exp(Node *op, Exp *e) : Node(op->name) {
     if(e->type != "bool") {
         output::errorMismatch(yylineno);
         exit(0);
     }
     this->type = "bool";
+    composer.flipLists(this, e);
 }
 
 //exp -> num b
@@ -108,6 +110,7 @@ Exp::Exp(Type *t, Exp *e) : Node(t->type) {
     this->type = t->type;
 }
 
+//exp -> id
 Exp::Exp(Node *id) : Node(id->name) {
     symbol_table_entry* entry = table.get_variable(id->name);
     this->type = entry->type;

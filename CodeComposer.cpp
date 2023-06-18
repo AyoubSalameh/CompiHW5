@@ -84,13 +84,18 @@ void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     if (op == ">=") op_cmd = "sge";
     if (op == "!=") op_cmd = "ne";
     if (op == "==") op_cmd = "eq";
-    
+
     buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
     int hole_address = buffer.emit("br i1 " + lhs->reg + ", label @, label @");
     lhs->truelist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, FIRST));
     lhs->falselist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, SECOND));
 }
 
+void CodeComposer::flipLists(Exp *left, Exp *right) {
+    //TODO: might need to add bplist(right->list)
+    left->truelist = right->falselist;
+    left->falselist = right->truelist;
+}
 
 /*
 void CodeComposer::emitGlobals() {

@@ -72,7 +72,7 @@ public:
     bplist nextlist = {};
 
     //exp -> (exp)
-    Exp(Exp* e) : type(e->type), Node(e->name) {};
+    Exp(Exp* e) : Node(e->name), type(e->type), reg(e->reg), truelist(e->truelist), falselist(e->falselist), nextlist(e->nextlist) {};
 
     //exp -> exp binop/relop/and/or exp
     Exp(Exp* e1, Node* op, Exp* e2);

@@ -59,7 +59,7 @@ Type: INT                                                                       
     | BOOL                                                                      {$$ = new Type("bool");}
     ;
 
-Exp: LPAREN Exp RPAREN                                                          {$$ = new Exp(dynamic_cast<Exp*>($2));}
+Exp: LPAREN Exp RPAREN  V                                                        {$$ = new Exp(dynamic_cast<Exp*>($2));}
     | Exp PLUS_MINUS Exp V                                                       {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp MUL_DIV Exp V                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | ID                                                                        {$$ = new Exp($1);}
@@ -72,7 +72,7 @@ Exp: LPAREN Exp RPAREN                                                          
     | NOT Exp                                                                   {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
     | Exp AND Exp                                                               {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp OR Exp                                                                {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | Exp EQUALITY Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | Exp RELATION Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp EQUALITY Exp  V                                                        {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp RELATION Exp    V                                                      {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | LPAREN Type RPAREN Exp                                                    {$$ = new Exp(dynamic_cast<Type*>($2), dynamic_cast<Exp*>($4));}
     ;

@@ -28,6 +28,7 @@ public:
     void allocateAndEmitString(Exp* exp);
     void composeAndEmitBinop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitRelop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
+    void flipLists(Exp* left, Exp* right);
 
 };
 
