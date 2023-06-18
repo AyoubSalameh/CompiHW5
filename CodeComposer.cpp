@@ -19,7 +19,7 @@ string CodeComposer::new_label() {
 }
 
 void CodeComposer::allocateAndEmitNum(Exp *exp) {
-    exp->reg = this->new_register()
+    exp->reg = this->new_register();
     buffer.emit(exp->reg + " = add i32 " + exp->name + ", 0");
 }
 
@@ -28,13 +28,13 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     string str = exp->name;
     str.pop_back();         //"ayoub" -> "ayoub
     string arrSize = "[" + to_string(str.size()) + " x i8]";
-    buffer.emitGlobal(reg + "constant" + arrSize " c" + str + "\\00\"");
+    buffer.emitGlobal(temp_reg + "constant" + arrSize + " c" + str + "\\00\"");
 
     //    %format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
-    string get_reg = "getelementptr" + arrSize + ", " + arrSize + "* " + temp_reg ", i32 0, i32 0";
+    string get_reg = "getelementptr" + arrSize + ", " + arrSize + "* " + temp_reg + ", i32 0, i32 0" ;
     str.replace(0, 1, "%"); //%ayoub
     buffer.emit(str + "_ptr = " + get_reg);
-    exp->reg = reg + "_ptr";
+    exp->reg = temp_reg + "_ptr";
 }
 
 /*

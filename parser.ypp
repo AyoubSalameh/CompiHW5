@@ -146,10 +146,10 @@ void yyerror(const char*) {
 }
 
 table_stack table = table_stack();
-CodeBuffer buffer = CodeBuffer();
 CodeComposer composer = CodeComposer();
 
 int main(){
+    CodeBuffer& buffer = CodeBuffer::instance();
     int parse = yyparse();
     table.final_check();
     buffer.printGlobalBuffer();
