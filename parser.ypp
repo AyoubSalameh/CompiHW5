@@ -7,6 +7,8 @@
     extern char* yytext;
     extern int yylineno;
     extern table_stack table;
+    extern CodeBuffer buffer;
+    extern CodeComposer composer;
     void yyerror(const char*);
 %}
 
@@ -144,8 +146,13 @@ void yyerror(const char*) {
 }
 
 table_stack table = table_stack();
+CodeBuffer buffer = CodeBuffer();
+CodeComposer composer = CodeComposer();
+
 int main(){
     int parse = yyparse();
     table.final_check();
+    buffer.printGlobalBuffer();
+    buffer.printCodeBuffer();
     return parse;
 }
