@@ -91,6 +91,10 @@ void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     lhs->falselist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, SECOND));
 }
 
+void CodeComposer::composeAndEmitAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2, string exp2quad) {
+
+}
+
 void CodeComposer::flipLists(Exp *left, Exp *right) {
     //TODO: might need to add bplist(right->list)
     left->truelist = right->falselist;

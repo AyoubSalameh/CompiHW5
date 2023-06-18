@@ -69,7 +69,7 @@ Exp: LPAREN Exp RPAREN  V                                                       
     | STRING V                                                                   {$$ = new Exp($1, "string");}
     | TRUE                                                                      {$$ = new Exp($1, "bool");}
     | FALSE                                                                     {$$ = new Exp($1, "bool");}
-    | NOT Exp                                                                   {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
+    | NOT Exp    V                                                               {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
     | Exp AND Exp                                                               {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp OR Exp                                                                {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp EQUALITY Exp  V                                                        {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
