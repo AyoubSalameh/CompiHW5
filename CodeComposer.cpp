@@ -53,26 +53,19 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
 void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
     lhs->reg = new_register();
     string op_cmd;
-    switch(op) {
-        case("+"):
-            op_cmd = "add";
-            break;
-        case("-"):
-            op_cmd = "sub";
-            break;
-        case("*"):
-            op_cmd = "mul";
-            break;
-        case("/"):
-            if(lhs->type == "byte") {
-                op_cmd == "udiv";
-            } else {
-                op_cmd == "sdiv";
-            }
-            buffer.emit("call void @divide_by_zero_check(i32 " + exp2->reg +")");
-            break;
+    if (op == "+") op_cmd = "add";
+    if (op == "-") op_cmd = "sub";
+    if (op == "*") op_cmd = "mul";
+    if (op == "/"){
+        if(lhs->type == "byte") {
+            op_cmd == "udiv";
+        } else {
+            op_cmd == "sdiv";
+        }
+        buffer.emit("call void @divide_by_zero_check(i32 " + exp2->reg +")");
     }
     buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    //TODO might need a different emit for byte
     //this code is for numeric surfing
     //TODO check if we can use trunc by asking
     if(lhs->type = "byte"){
@@ -85,25 +78,12 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
 void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
     lhs->reg = new_register();
     string op_cmd;
-    switch(op) {
-        case ("<"):
-            op_cmd = "slt";
-            break;
-        case (">"):
-            op_cmd = "sgt";
-            break;
-        case ("<="):
-            op_cmd = "sle";
-            break;
-        case (">="):
-            op_cmd = "sge";
-            break;
-        case ("!="):
-            op_cmd = "ne";
-            break;
-        case ("=="):
-            op_cmd = "eq";
-            break;
+    if (op == "<") op_cmd = "slt";
+    if (op == ">") op_cmd = "sgt";
+    if (op == "<=") op_cmd = "sle";
+    if (op == ">=") op_cmd = "sge";
+    if (op == "!=") op_cmd = "ne";
+    if (op == "==") op_cmd = "eq";
     }
     buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
     int hole_address = buffer.emit("br i1 " + lhs->reg + ", label @, label @");
