@@ -2,13 +2,13 @@
     #include <iostream>
     #include "parser.h"
     #include "hw3_output.hpp"
+    #include "CodeComposer.h"
+    #include "bp.hpp"
     using namespace std;
     int yylex();
     extern char* yytext;
     extern int yylineno;
     extern table_stack table;
-    extern CodeBuffer buffer;
-    extern CodeComposer composer;
     void yyerror(const char*);
 %}
 
@@ -147,6 +147,7 @@ void yyerror(const char*) {
 
 table_stack table = table_stack();
 CodeComposer composer = CodeComposer();
+CodeBuffer buffer = CodeBuffer();
 
 int main(){
     CodeBuffer& buffer = CodeBuffer::instance();

@@ -5,6 +5,8 @@
 #include <iostream>
 
 extern table_stack table;
+extern CodeComposer composer;
+
 extern int yylineno;
 using namespace std;
 

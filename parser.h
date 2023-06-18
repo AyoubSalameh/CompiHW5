@@ -5,10 +5,11 @@
 #include "symbol.h"
 #include "hw3_output.hpp"
 #include "bp.hpp"
+#include "defs.h"
 #include "CodeComposer.h"
 
 
-class Node;
+/*class Node;
 class Statements;
 class Statement;
 class Type;
@@ -24,13 +25,13 @@ class RetType;
 class FormalDecl;
 class FormalsList;
 class Formals;
-class FuncDecl;
+class FuncDecl;*/
 
 
 #define YYSTYPE Node*
 
 extern char* yytext;
-extern CodeComposer composer;
+
 
 class Node {
 public:

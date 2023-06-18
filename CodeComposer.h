@@ -2,9 +2,10 @@
 #define COMPIHW5_COMPOSER_H
 #include <string>
 #include "bp.hpp"
+#include "defs.h"
 #include "parser.h"
 
-extern CodeBuffer buffer;
+extern CodeComposer composer;
 
 using namespace std;
 
@@ -15,6 +16,7 @@ private:
 
 public:
     CodeComposer(): cur_register(0), cur_label(0) {}
+    static CodeComposer &instance();
 
     string new_register();
     string new_global_register();

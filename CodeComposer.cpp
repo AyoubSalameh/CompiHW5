@@ -1,5 +1,13 @@
 #include "CodeComposer.h"
 
+extern CodeComposer composer;
+extern CodeBuffer buffer;
+
+CodeComposer &CodeComposer::instance() {
+	static CodeComposer inst;//only instance
+	return inst;
+}
+
 string CodeComposer::new_register() {
     string reg = "%var" + to_string(cur_register);
     cur_register++;
