@@ -55,6 +55,10 @@ public:
 class Call : public Node {
 public:
     std::string type;
+    std::string reg = "";
+    bplist truelist = {};
+    bplist falselist = {};
+    bplist nextlist = {};
 
     /*Call -> ID (ExpList)
     Call -> ID ()*/
@@ -93,7 +97,7 @@ public:
     Exp(Node* id);
 
     //exp -> call
-    Exp(Call* c) : Node(c->name), type(c->type){}
+    Exp(Call* c) : Node(c->name), type(c->type), reg(c->reg), truelist(c->truelist), falselist(c->falselist), nextlist(c->nextlist) {}
 
     ~Exp() = default;
 };

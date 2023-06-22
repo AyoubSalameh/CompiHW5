@@ -14,7 +14,7 @@ class CodeComposer{
 private:
     long cur_register;
     long cur_label;
-    string function_rbp = "";
+    string top_function_rbp = "";
 
 public:
     CodeComposer(): cur_register(0), cur_label(0) {}
@@ -32,6 +32,8 @@ public:
     void composeAndEmitRelop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitOrAnd(Exp* lhs, Exp* exp1, string op, Exp* exp2, string marker);
     void flipLists(Exp* left, Exp* right);
+    void saveFuncArg(Exp* exp, int offset);
+    void loadVar(Exp* exp, int offset);
 
 };
 

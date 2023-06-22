@@ -120,6 +120,12 @@ Exp::Exp(Type *t, Exp *e) : Node(e->name) {
 Exp::Exp(Node *id) : Node(id->name) {
     symbol_table_entry* entry = table.get_variable(id->name);
     this->type = entry->type;
+    int offset = entry->offset;
+    if(offset < 0) {
+        composer.saveFuncArg(this, offset);
+    } else {
+
+    }
 }
 
 

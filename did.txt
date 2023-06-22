@@ -50,20 +50,21 @@ Call: ID LPAREN ExpList RPAREN                                                  
     | ID LPAREN RPAREN                                                          {$$ = new Call($1);}
     ;
 
-ExpList: Exp                                                                    {$$ = new ExpList(dynamic_cast<Exp*>($1));}
-       | Exp COMMA ExpList                                                      {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
+// dont know if we need to use phi or not, or do anything at all. ask someone
+ExpList: Exp         ?                                                           {$$ = new ExpList(dynamic_cast<Exp*>($1));}
+       | Exp COMMA ExpList         ?                                             {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
        ;
 
-Type: INT                                                                       {$$ = new Type("int");}
-    | BYTE                                                                      {$$ = new Type("byte");}
-    | BOOL                                                                      {$$ = new Type("bool");}
+Type: INT  V                                                                     {$$ = new Type("int");}
+    | BYTE  V                                                                    {$$ = new Type("byte");}
+    | BOOL   V                                                                   {$$ = new Type("bool");}
     ;
 
 Exp: LPAREN Exp RPAREN  V                                                        {$$ = new Exp(dynamic_cast<Exp*>($2));}
     | Exp PLUS_MINUS Exp V                                                       {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp MUL_DIV Exp V                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | ID                                                                        {$$ = new Exp($1);}
-    | Call                                                                      {$$ = new Exp(dynamic_cast<Call*>($1));}
+    | ID    V                                                                    {$$ = new Exp($1);}
+    | Call   V                                                                   {$$ = new Exp(dynamic_cast<Call*>($1));}
     | NUM V                                                                       {$$ = new Exp($1, "int");}
     | NUM B V //make sure we need to save as i8                                                                    {$$ = new Exp($1, $2);}
     | STRING V                                                                   {$$ = new Exp($1, "string");}

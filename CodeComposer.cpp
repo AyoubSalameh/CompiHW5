@@ -118,38 +118,15 @@ void CodeComposer::flipLists(Exp *left, Exp *right) {
     left->falselist = right->truelist;
 }
 
-/*
-void CodeComposer::emitGlobals() {
-    //might need to add internal constant and zero_div.str
-    buffer.emit("@.DIVISION_ERROR = internal constant[23 x i8] c\"Error division by zero\\00\"");
-    buffer.emit("@.int_specifier = constant [4 x i8] c\"%d\\0A\\00\"");
-    buffer.emit("@.str_specifier = constant [4 x i8] c\"%s\\0A\\00\"");
-    buffer.emit("declare i32 @printf(i8*, ...)");
-    buffer.emit("declare void @exit(i32)");
+void CodeComposer::saveFuncArg(Exp *exp, int offset) {
+    string func_var = to_string( -1 * (offset + 1));
+    exp->reg = "%" + func_var;
+}
 
-    //printi
-    buffer.emit("define void @printi(i32) {");
-    buffer.emit("%spec_ptr = getelementptr [4 x i8], [4 x i8]* @.int_specifier, i32 0, i32 0");
-    buffer.emit("call i32 (i8*, ...) @printf(i8* %spec_ptr, i32 %0)");
-    buffer.emit("ret void");
-    buffer.emit("}");
-
-    //print
-    buffer.emit("define void @print(i8*) {");
-    buffer.emit("%spec_ptr = getelementptr [4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0");
-    buffer.emit("call i32 (i8*, ...) @printf(i8* %spec_ptr, i8* %0)");
-    buffer.emit("ret void");
-    buffer.emit("}");
-
-    //function to check division by zero
-    buffer.emit("define void @divide_by_zero_check(i32) {");
-    buffer.emit("%result = icmp eq i32 %0 ,0");
-    buffer.emit("br i1 %result, label %divided_by_zero, label %end");
-    buffer.emit("divided_by_zero:");
-    buffer.emit("%ptr = getelementptr [23 x i8], [23 x i8]* @.DIVISION_ERROR, i32 0, i32 0");
-    buffer.emit("call i32 (i8*, ...) @print(i8* %ptr)");
-    buffer.emit("call void @exit(i32 0)");
-    buffer.emit("end:");
-    buffer.emit("ret void");
-    buffer.emit("}");
-}*/
+void CodeComposer::loadVar(Exp *exp, int offset) {
+    string reg = new_register();
+    string address_ptr = new_register();
+    buffer.emit(address_ptr  + " = getelementptr i32, i32* " + this->top_function_rbp + ", i32 " + to_string(offset));
+    buffer.emit(reg + " = load i32, i32* " + address_ptr);
+    exp->reg = reg;
+}
