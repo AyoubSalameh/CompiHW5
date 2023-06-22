@@ -128,8 +128,8 @@ Exp: LPAREN Exp RPAREN                                                          
     | TRUE                                                                      {$$ = new Exp($1, "bool");}
     | FALSE                                                                     {$$ = new Exp($1, "bool");}
     | NOT Exp                                                                   {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
-    | Exp AND Exp                                                               {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | Exp OR Exp                                                                {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp AND MarkerM Exp                                                       {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($4), $3->name);}
+    | Exp OR MarkerM Exp                                                        {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($4), $3->name);}
     | Exp EQUALITY Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp RELATION Exp                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | LPAREN Type RPAREN Exp                                                    {$$ = new Exp(dynamic_cast<Type*>($2), dynamic_cast<Exp*>($4));}
@@ -137,6 +137,7 @@ Exp: LPAREN Exp RPAREN                                                          
 
 M:                                                                              {table.open_scope();}
 CheckBoolExp: Exp                                                               {check_exp(dynamic_cast<Exp*>($1));}
+MarkerM:                                                                        {$$ = new MarkerM();}
 
 %%
 

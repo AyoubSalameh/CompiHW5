@@ -50,6 +50,15 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     exp->reg = temp_reg + "_ptr";
 }
 
+void CodeComposer::allocateAndEmitBool(Exp *exp) {
+    int address = buffer.emit("br label @");
+    if(exp->name == "true") {
+        exp->truelist = buffer.makelist(bplist(address, FIRST));
+    } else {
+        exp->falselist = buffer.makelist(bplist(address, SECOND));
+    }
+}
+
 void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
     lhs->reg = new_register();
     string op_cmd;
@@ -91,8 +100,16 @@ void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     lhs->falselist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, SECOND));
 }
 
-void CodeComposer::composeAndEmitAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2, string exp2quad) {
-
+void CodeComposer::composeAndEmitOrAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2, string marker) {
+    if(op == "and") {
+        buffer.bpatch(exp1->truelist, marker);
+        lhs->truelist = exp2->truelist;
+        lhs->falselist = buffer.merge(exp1->falselist, exp2->falselist);
+    } else { //op == or
+        buffer.bpatch(exp1->falselist, marker);
+        lhs->falselist = exp2->falselist;
+        lhs->truelist = buffer.merge(exp1->truelist, exp2->truelist);
+    }
 }
 
 void CodeComposer::flipLists(Exp *left, Exp *right) {

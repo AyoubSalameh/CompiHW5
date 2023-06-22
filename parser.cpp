@@ -29,7 +29,7 @@ FormalsList::FormalsList(FormalDecl *dec) : Node(dec->name) {
 ///******************************************EXP***************************************************
 
 //exp -> exp binop/relop/and/or exp
-Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
+Exp::Exp(Exp *e1, Node *op, Exp *e2, string markerLabel) : Node(op->name) {
     string type1 = e1->type;
     string type2 = e2->type;
     string operation = op->name;
@@ -67,6 +67,7 @@ Exp::Exp(Exp *e1, Node *op, Exp *e2) : Node(op->name) {
             exit(0);
         }
         this->type = "bool";
+        composer.composeAndEmitOrAnd(this, e1, operation, e2, markerLabel);
     }
 }
 
@@ -99,15 +100,20 @@ Exp::Exp(Node *n, std::string type) : Node(n->name), type(type) {
     if(type == "string") {
         composer.allocateAndEmitString(this);
     }
+    if(type == "bool") {
+        composer.allocateAndEmitBool(this);
+    }
+
 }
 
-Exp::Exp(Type *t, Exp *e) : Node(t->type) {
+Exp::Exp(Type *t, Exp *e) : Node(e->name) {
     string e_type = e->type;
     if((e_type != "byte" && e_type != "int") || (t->type != "byte" && t->type != "int")) {
         output::errorMismatch(yylineno);
         exit(0);
     }
     this->type = t->type;
+    this->reg = e->reg;
 }
 
 //exp -> id
@@ -275,3 +281,9 @@ FuncDecl::FuncDecl(OverRide* override, RetType* rt, Node* id, Formals* params){
     //buils vector params
 }
 
+//when marker is negzar, the lexeme in node is the label given to the marker.
+MarkerM::MarkerM() {
+    this->name = composer.new_label();
+    buffer.emit("br label %" + name);
+    buffer.emit(name + ":");
+}

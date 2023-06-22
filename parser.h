@@ -75,7 +75,7 @@ public:
     Exp(Exp* e) : Node(e->name), type(e->type), reg(e->reg), truelist(e->truelist), falselist(e->falselist), nextlist(e->nextlist) {};
 
     //exp -> exp binop/relop/and/or exp
-    Exp(Exp* e1, Node* op, Exp* e2);
+    Exp(Exp* e1, Node* op, Exp* e2, string markerLabel = "");
 
     //exp -> not exp
     Exp(Node* op, Exp* e);
@@ -238,7 +238,11 @@ public:
     ~FuncDecl() = default;
 };
 
-
+class MarkerM : public Node {
+public:
+    MarkerM();
+    ~MarkerM() = default;
+};
 
 
 #endif //HW3_OUTPUT_CPP_PARSER_H

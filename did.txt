@@ -67,12 +67,12 @@ Exp: LPAREN Exp RPAREN  V                                                       
     | NUM V                                                                       {$$ = new Exp($1, "int");}
     | NUM B V //make sure we need to save as i8                                                                    {$$ = new Exp($1, $2);}
     | STRING V                                                                   {$$ = new Exp($1, "string");}
-    | TRUE                                                                      {$$ = new Exp($1, "bool");}
-    | FALSE                                                                     {$$ = new Exp($1, "bool");}
+    | TRUE         V                                                             {$$ = new Exp($1, "bool");}
+    | FALSE       V                                                              {$$ = new Exp($1, "bool");}
     | NOT Exp    V                                                               {$$ = new Exp($1, dynamic_cast<Exp*>($2));}
-    | Exp AND Exp                                                               {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | Exp OR Exp                                                                {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp AND Exp      V                                                         {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
+    | Exp OR Exp      V                                                          {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp EQUALITY Exp  V                                                        {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
     | Exp RELATION Exp    V                                                      {$$ = new Exp(dynamic_cast<Exp*>($1), $2, dynamic_cast<Exp*>($3));}
-    | LPAREN Type RPAREN Exp                                                    {$$ = new Exp(dynamic_cast<Type*>($2), dynamic_cast<Exp*>($4));}
+    | LPAREN Type RPAREN Exp   V                                                 {$$ = new Exp(dynamic_cast<Type*>($2), dynamic_cast<Exp*>($4));}
     ;

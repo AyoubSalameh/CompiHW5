@@ -18,6 +18,7 @@ class FormalDecl;
 class FormalsList;
 class Formals;
 class FuncDecl;
+class MarkerM;
 
 class CodeComposer;
 
