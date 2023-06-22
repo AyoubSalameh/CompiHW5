@@ -34,6 +34,7 @@ public:
     void flipLists(Exp* left, Exp* right);
     void saveFuncArg(Exp* exp, int offset);
     void loadVar(Exp* exp, int offset);
+    void storeVar(Exp* exp, int offset);
 
 };
 

@@ -130,3 +130,10 @@ void CodeComposer::loadVar(Exp *exp, int offset) {
     buffer.emit(reg + " = load i32, i32* " + address_ptr);
     exp->reg = reg;
 }
+
+void CodeComposer::storeVar(Exp *exp, int offset) {
+    string address_ptr = new_register();
+    buffer.emit(address_ptr  + " = getelementptr i32, i32* " + this->top_function_rbp + ", i32 " + to_string(offset));
+    buffer.emit("store i32 " + exp->reg + ", i32* " + address_ptr);
+
+}

@@ -75,6 +75,9 @@ public:
     bplist falselist = {};
     bplist nextlist = {};
 
+    //not for production rules. only for inner use
+    Exp() : Node(), type("void") {}
+
     //exp -> (exp)
     Exp(Exp* e) : Node(e->name), type(e->type), reg(e->reg), truelist(e->truelist), falselist(e->falselist), nextlist(e->nextlist) {};
 

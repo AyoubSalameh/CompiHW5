@@ -124,7 +124,7 @@ Exp::Exp(Node *id) : Node(id->name) {
     if(offset < 0) {
         composer.saveFuncArg(this, offset);
     } else {
-
+        composer.loadVar(this, offset);
     }
 }
 
@@ -151,16 +151,35 @@ ExpList::ExpList(Exp *e, ExpList *list) : Node(e->name) {
 
 ///****************************************** STATEMENT *******************************************
 
+//statement -> type ID ;
 Statement::Statement(Type *t, Node *id) {
     table.insert_symbol(id->name, t->type);
+    int offset = table.get_variable(id->name)->offset;
+    Exp temp;
+    temp.type = t->type;
+    if(t->type == "bool") {
+        temp.name = "false";
+        composer.allocateAndEmitBool(temp);
+    } else {
+        temp.name = "0";
+        composer.allocateAndEmitNum(temp);
+        composer.storeVar(temp, offset);
+    }
 }
 
+//statement -> Type ID = Exp ;
 Statement::Statement(Type *t, Node *id, Exp *e) {
     if(!type_compatible(t->type, e->type)) {
         output::errorMismatch(yylineno);
         exit(0);
     }
     table.insert_symbol(id->name, t->type);
+    int offset = table.get_variable(id->name)->offset;
+    if(t->type == "bool") {
+        //TODO: memosh of assign of type bool
+    } else {
+        composer.storeVar(e, offset);
+    }
 }
 
 /*statement -> ID = Exp ;
@@ -184,14 +203,24 @@ Statement::Statement(Node *id, Exp *e) {
     }
     else{
         symbol_table_entry* entry = table.get_variable(id->name);
+        int offset = entry->offset;
         //if we get here, symbol exists, otherwise we wouldve thrown error from the function
 
         if(!type_compatible(entry->type, e->type)) {
             output::errorMismatch(yylineno);
             exit(0);
         }
+        //this prod rule wont be used on function arguments - offset always >= 0
+        if(offset >= 0) {
+            if(e->type == "bool") {
+                //TODO: complete
+            }
+            else {
+                composer.storeVar(e, offset);
+            }
+        }
     }
-    }  
+}
 
 
 
