@@ -253,9 +253,9 @@ void table_stack::close_scope() {
         cout << "going to close scope, number of scopes before is: " << tables_stack.size() << endl;
         cout << "max offset before is: " << offsets_stack.top() << endl;
     }
-    output::endScope();
+    //output::endScope();
     symbol_table_scope to_close = tables_stack.back();
-    to_close.print_scope();
+    //to_close.print_scope();
     tables_stack.pop_back();
     offsets_stack.pop();
 

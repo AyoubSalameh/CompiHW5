@@ -53,9 +53,9 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
 void CodeComposer::allocateAndEmitBool(Exp *exp) {
     int address = buffer.emit("br label @");
     if(exp->name == "true") {
-        exp->truelist = buffer.makelist(bplist(address, FIRST));
+        exp->truelist = buffer.makelist(bplist_pair(address, FIRST));
     } else {
-        exp->falselist = buffer.makelist(bplist(address, SECOND));
+        exp->falselist = buffer.makelist(bplist_pair(address, SECOND));
     }
 }
 

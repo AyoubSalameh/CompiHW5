@@ -11,6 +11,7 @@ using namespace std;
 enum BranchLabelIndex {FIRST, SECOND};
 
 typedef vector<pair<int,BranchLabelIndex>> bplist;
+typedef pair<int,BranchLabelIndex> bplist_pair;
 
 class CodeBuffer{
 public:
