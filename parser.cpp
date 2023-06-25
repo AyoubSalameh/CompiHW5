@@ -176,10 +176,9 @@ Statement::Statement(Type *t, Node *id, Exp *e) {
     table.insert_symbol(id->name, t->type);
     int offset = table.get_variable(id->name)->offset;
     if(t->type == "bool") {
-        //TODO: memosh of assign of type bool
-    } else {
-        composer.storeVar(e, offset);
+        composer.boolValEval(e);
     }
+    composer.storeVar(e, offset);
 }
 
 /*statement -> ID = Exp ;
@@ -213,11 +212,9 @@ Statement::Statement(Node *id, Exp *e) {
         //this prod rule wont be used on function arguments - offset always >= 0
         if(offset >= 0) {
             if(e->type == "bool") {
-                //TODO: complete
+                composer.boolValEval(e);
             }
-            else {
-                composer.storeVar(e, offset);
-            }
+            composer.storeVar(e, offset);
         }
     }
 }

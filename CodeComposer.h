@@ -22,8 +22,11 @@ public:
 
     string new_register();
     string new_global_register();
-    string new_label();
+    string new_label(string label = "label_");
     //void emitGlobals();
+
+    void boolValEval(Exp* exp);
+
     void allocateAndEmitNumB(Exp* exp);
     void allocateAndEmitNum(Exp* exp);
     void allocateAndEmitString(Exp* exp);

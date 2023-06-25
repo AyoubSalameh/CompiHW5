@@ -31,8 +31,8 @@ Statements: Statement                                                           
 Statement: LBRACE {table.open_scope();} Statements RBRACE                       {$$ = new Statement();
                                                                                  table.close_scope();}
           | Type ID SC   V                                                       {$$ = new Statement(dynamic_cast<Type*>($1), $2);}
-          | Type ID ASSIGN Exp SC   //TODO: complete bool                                           {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
-          | ID ASSIGN Exp SC     //TODO: complete bool                                               {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
+          | Type ID ASSIGN Exp SC   V                                          {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
+          | ID ASSIGN Exp SC   V                                             {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
           | Call SC                                                             {$$ = new Statement(dynamic_cast<Call*>($1));}
           | RETURN SC                                                           {$$ = new Statement($1);}
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
