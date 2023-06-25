@@ -37,7 +37,8 @@ public:
     void composeAndEmitBinop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitRelop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitOrAnd(Exp* lhs, Exp* exp1, string op, Exp* exp2, string marker);
-    void composeAndEmitFuncDecl( RetType *ret_type, string uniqe_func_name, Formals *params);
+    void composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_name, Formals *params);
+    void composeAndEmitEndFunc(RetType *ret_type, Statements* sts);
     void flipLists(Exp* left, Exp* right);
     void saveFuncArg(Exp* exp, int offset);
     void loadVar(Exp* exp, int offset);

@@ -165,7 +165,14 @@ void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_n
     }
 
     buffer.emit("define " + ret_type_to_emit + " @" + uniqe_func_name + "(" + args_list_to_emit + "){");
-    //TODO: remeber the closing } 
+    //the closing "}" in emmited in composeAndEmitEndFunc
+}
+
+void CodeComposer::composeAndEmitEndFunc(RetType *ret_type, Statements* sts) {
+    //TODO: complete - we either emit another return line no matter what, or we save a list<statment> in statments,
+    //and check whether the last one is a return statment.
+    
+    buffer.emit("}");
 }
 
 void CodeComposer::flipLists(Exp *left, Exp *right) {
