@@ -52,6 +52,11 @@ void CodeComposer::boolValEval(Exp *exp) {
     buffer.bpatch(next, next_label);
 }
 
+void CodeComposer::emitBranchNext(Exp* exp){
+    int address = buffer.emit("br label @");
+    exp->nextlist = buffer.merge(buffer.makelist(bplist_pair(address, FIRST)), exp->nextlist);
+}
+
 void CodeComposer::allocateAndEmitNumB(Exp *exp) {
     exp->reg = this->new_register();
     buffer.emit(exp->reg + " = add i32 " + exp->name + ", 0");
