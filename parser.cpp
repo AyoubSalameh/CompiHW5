@@ -159,11 +159,11 @@ Statement::Statement(Type *t, Node *id) {
     temp.type = t->type;
     if(t->type == "bool") {
         temp.name = "false";
-        composer.allocateAndEmitBool(temp);
+        composer.allocateAndEmitBool(&temp);
     } else {
         temp.name = "0";
-        composer.allocateAndEmitNum(temp);
-        composer.storeVar(temp, offset);
+        composer.allocateAndEmitNum(&temp);
+        composer.storeVar(&temp, offset);
     }
 }
 
