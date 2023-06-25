@@ -1,4 +1,5 @@
 #include "CodeComposer.h"
+#include "map"
 
 extern CodeComposer composer;
 extern CodeBuffer buffer;
@@ -143,6 +144,30 @@ void CodeComposer::composeAndEmitOrAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2
     }
 }
 
+void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_name, Formals *params) {
+    /*not sure if everything shuld be string or i32*/
+    map<string, string> typesMap = {
+    {"int", "i32"},
+    {"byte", "i8" },
+    {"bool", "i1"},
+    {"string", "i8*"}};
+
+    string args_list_to_emit = "";
+    string ret_type_to_emit = typesMap[ret_type->type];
+
+    //preparing the line that has the types of all args
+    for(int i=0; i < params->param_list.size(); i++) {
+        string curr_type = params->param_list[i].type;
+        args_list_to_emit += typesMap[curr_type];
+        if(i != params->param_list.size()-1 ) {
+            args_list_to_emit += ", ";
+        }
+    }
+
+    buffer.emit("define " + ret_type_to_emit + " @" + uniqe_func_name + "(" + args_list_to_emit + "){");
+    //TODO: remeber the closing } 
+}
+
 void CodeComposer::flipLists(Exp *left, Exp *right) {
     //TODO: might need to add bplist(right->list)
     left->truelist = right->falselist;
@@ -167,4 +192,10 @@ void CodeComposer::storeVar(Exp *exp, int offset) {
     buffer.emit(address_ptr  + " = getelementptr i32, i32* " + this->top_function_rbp + ", i32 " + to_string(offset));
     buffer.emit("store i32 " + exp->reg + ", i32* " + address_ptr);
 
+}
+
+string CodeComposer::allocaFunctionStack() {
+    string frame_base = new_register();
+    buffer.emit(frame_base + " = alloca i32, i32 " + to_string(this->max_num_of_vars_per_func));
+    return frame_base;
 }

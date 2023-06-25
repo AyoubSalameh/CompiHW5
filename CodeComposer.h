@@ -14,9 +14,11 @@ class CodeComposer{
 private:
     long cur_register;
     long cur_label;
-    string top_function_rbp = "";
 
 public:
+    int max_num_of_vars_per_func = 50;
+    string top_function_rbp = "";
+
     CodeComposer(): cur_register(0), cur_label(0) {}
     static CodeComposer &instance();
 
@@ -35,10 +37,12 @@ public:
     void composeAndEmitBinop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitRelop(Exp* lhs, Exp* exp1, string op, Exp* exp2);
     void composeAndEmitOrAnd(Exp* lhs, Exp* exp1, string op, Exp* exp2, string marker);
+    void composeAndEmitFuncDecl( RetType *ret_type, string uniqe_func_name, Formals *params);
     void flipLists(Exp* left, Exp* right);
     void saveFuncArg(Exp* exp, int offset);
     void loadVar(Exp* exp, int offset);
     void storeVar(Exp* exp, int offset);
+    string allocaFunctionStack();
 
 };
 

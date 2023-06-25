@@ -193,7 +193,15 @@ void table_stack::insert_symbol(const string &n, string t, bool func, bool overr
         exit(0);
     }
     int insert_offset = func ? 0 : offsets_stack.top();
-    symbol_table_entry entry(n, t, insert_offset, func, override, p);
+    string uniqe_name;
+    if( func && override ) {
+        uniqe_name = n + to_string(this->override_counter);
+        this->override_counter++;
+    }
+    else {
+        uniqe_name = n;
+    }
+    symbol_table_entry entry(n,uniqe_name, t, insert_offset, func, override, p);
 
     this->symbol_exists(entry);
 
@@ -217,7 +225,7 @@ void table_stack::insert_func_args(vector<string> types, vector<string> names, s
 
     int offset = -1;
     for(int i = 0; i < types.size(); i++) {
-        symbol_table_entry entry(names[i], types[i], offset);
+        symbol_table_entry entry(names[i], names[i], types[i], offset);
 
         /*checking that we dont insert the same parameter like - foo(int x, int x)*/
         symbol_exists(entry);

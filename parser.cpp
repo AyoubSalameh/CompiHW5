@@ -368,9 +368,16 @@ FuncDecl::FuncDecl(OverRide* override, RetType* rt, Node* id, Formals* params){
         types.push_back(param_list[i].type);
         ids.push_back(param_list[i].name);
     }
+    
+    /* added a field to symbol table entry called uniqe_name*/
     table.insert_symbol(id->name, rt->type, true, override->isOverRide, types);
     table.insert_func_args(types, ids, rt->type);
-    //buils vector params
+    //builds vector params
+
+    string uniqe_func_name = (table.get_function(id->name, types))->uniqe_name;
+    composer.top_function_rbp = composer.allocaFunctionStack();
+    composer.composeAndEmitFuncDecl(rt,uniqe_func_name,params);
+
 }
 
 //when marker is negzar, the lexeme in node is the label given to the marker.

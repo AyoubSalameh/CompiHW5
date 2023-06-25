@@ -17,6 +17,7 @@ bool type_compatible(const string& right, const string& left);
 class symbol_table_entry {
 public:
     string name;
+    string uniqe_name; //if this is func, and is override, we will attach a digit to the functions name in oreder to deffiritiate. is there is no override it will be identical to name
     string type;  //if func, this means the return type
     int offset;
 
@@ -25,9 +26,9 @@ public:
     vector<string> params;
 
 public:
-    symbol_table_entry(const string& n, string t, int o, bool func = false, bool override = false,
+    symbol_table_entry(const string& n, const string& u_n, string t, int o, bool func = false, bool override = false,
                        vector<string> p = vector<string>()) :
-                       name(n), type(t), offset(o), is_func(func), is_override(override), params(p)
+                       name(n), uniqe_name(u_n), type(t), offset(o), is_func(func), is_override(override), params(p)
     {}
     ~symbol_table_entry() = default;
 };
@@ -61,6 +62,7 @@ class table_stack {
 public:
     vector<symbol_table_scope> tables_stack;
     stack<int> offsets_stack;
+    int override_counter = 0;
 
     table_stack();
     ~table_stack() = default;
