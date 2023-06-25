@@ -21,16 +21,16 @@ string CodeComposer::new_global_register() {
 }
 
 string CodeComposer::new_label(string label) {
-    string label = label + to_string(cur_label);
+    string new_label = label + to_string(cur_label);
     cur_label++;
-    return label;
+    return new_label;
 }
 
 /*this function is used to emit code that uses phi to evaluate bool expressions to 0 or 1 */
 void CodeComposer::boolValEval(Exp *exp) {
     string true_label = new_label("PHI_TRUE_LABEL_");
-    string false_label = new_label("PHI_FALSE_LABEL");
-    string next_label = new_label("PHI_NEXT_LABEL");
+    string false_label = new_label("PHI_FALSE_LABEL_");
+    string next_label = new_label("PHI_NEXT_LABEL_");
     buffer.emit(true_label + ":");
     int true_address = buffer.emit("br label @");
     //TODO: instead of @ and bp, try to emit the next label directly
@@ -38,10 +38,15 @@ void CodeComposer::boolValEval(Exp *exp) {
     int false_address = buffer.emit("br label @");
     //TODO: instead of @ and bp, try to emit the next label directly
     buffer.emit(next_label + ":");
+
+    if(exp->reg == "")
+    {
+        exp->reg = new_register();
+    }
     buffer.emit(exp->reg + " = phi i32 [1, %" + true_label + "], [0, %" + false_label + "]");
 
     bplist next = buffer.merge(buffer.makelist(bplist_pair(true_address, FIRST)),
-                               buffer.makelist(bplist_pair(false_address, FIRST));
+                               buffer.makelist(bplist_pair(false_address, FIRST)));
     buffer.bpatch(exp->truelist, true_label);
     buffer.bpatch(exp->falselist, false_label);
     buffer.bpatch(next, next_label);
