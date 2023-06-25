@@ -158,7 +158,7 @@ ExpList::ExpList(Exp *e, ExpList *list) : Node(e->name) {
 ///****************************************** STATEMENT *******************************************
 
 Statement::Statement(Statements *sts) {
-    this->next_list = sts->next_list;
+    //this->next_list = sts->next_list;
     this->break_list = sts->break_list;
     this->continue_list = sts->continue_list;
 }
@@ -319,6 +319,26 @@ Statement::Statement(Exp *e, MarkerM *if_body_marker, Statement *if_st, MarkerM 
     this->next_list = buffer.merge(this->next_list, e->nextlist);
     buffer.bpatch(this->next_list, end_of_if_else);
 }
+
+///****************************************** STATEMENTS *******************************************
+
+//Statements -> Statement
+Statements::Statements(Statement* st) : Node(st->name) {
+    this->next_list = buffer.merge(this->next_list, st->next_list);
+    this->break_list = buffer.merge(this->break_list, st->break_list);
+    this->continue_list = buffer.merge(this->continue_list, st->continue_list);
+}
+
+//Statements -> Statements Statement
+Statements::Statements(Statements* sts, Statement* st) : Node(st->name) {
+    this->next_list = buffer.merge(this->next_list, st->next_list);
+    this->next_list = buffer.merge(this->next_list, sts->next_list);
+    this->break_list = buffer.merge(this->break_list, st->break_list);
+    this->break_list = buffer.merge(this->break_list, sts->break_list);
+    this->continue_list = buffer.merge(this->continue_list, st->continue_list);
+    this->continue_list = buffer.merge(this->continue_list, sts->continue_list);
+}
+
 
 
 

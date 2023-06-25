@@ -24,8 +24,8 @@ FormalsList: FormalDecl                                                         
 
 FormalDecl: Type ID                                                             {$$ = new FormalDecl(dynamic_cast<Type*>($1), $2);}
             ;
-Statements: Statement                                                           {$$ = new Statements(dynamic_cast<Statement*>($1));}
-          | Statements Statement                                                {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
+Statements: Statement  V                                                         {$$ = new Statements(dynamic_cast<Statement*>($1));}
+          | Statements Statement      V                                          {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
           ;
 
 

@@ -168,10 +168,10 @@ public:
     bplist next_list = {};
 
     //Statements -> Statement
-    Statements(Statement* st) : Node(st->name) {}
+    Statements(Statement* st);
 
     //Statements -> Statements Statement
-    Statements(Statements* sts, Statement* st) : Node(st->name) {}
+    Statements(Statements* sts, Statement* st);
 
     ~Statements() = default;
 
