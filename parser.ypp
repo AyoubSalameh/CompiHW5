@@ -96,8 +96,7 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE                       
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
           | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement                   {$$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<MarkerM*>($6), dynamic_cast<Statement*>($7));
                                                                                  table.close_scope();}
-          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE {(dynamic_Cast<Exp*>($3))->nextlist = buffer.merge(buffer.makelist(pair<int, BranchLabelIndex>(buffer.emit("br label @"), FIRST)),
-                                                                                                                                                                                                     exp->next_list);
+          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE {(dynamic_cast<Exp*>($3))->nextlist = buffer.merge(buffer.makelist(pair<int, BranchLabelIndex>(buffer.emit("br label @"), FIRST)), (dynamic_cast<Exp*>($3))->nextlist);
                                                                     ;table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<MarkerM*>($6), dynamic_cast<Statement*>($7), dynamic_cast<MarkerM*>($10), dynamic_cast<Statement*>($11));
                                                                                                                                     table.close_scope();}
           | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
