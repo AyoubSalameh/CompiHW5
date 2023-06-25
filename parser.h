@@ -126,9 +126,12 @@ public:
 
 class Statement : public Node {
 public:
+    bplist continue_list = {};
+    bplist break_list = {};
+    bplist next_list = {};
 
     //statement -> { statements }
-    Statement() = default;
+    Statement(Statements* sts);
 
     //statement -> type ID ;
     Statement(Type* t, Node* id);
@@ -149,7 +152,10 @@ public:
     Statement(Node* n);
 
     //statement -> if ( exp ) statement
-    Statement(Exp* e);
+    Statement(Exp* e, MarkerM* body, Statement* st);
+
+    //statement -> if ( exp ) statement else statement
+    Statement(Exp* e, MarkerM* if_body_marker, Statement* if_st, MarkerM* else_body_marker, Statement* else_st);
 
     ~Statement() = default;
 
@@ -157,6 +163,9 @@ public:
 
 class Statements : public Node {
 public:
+    bplist continue_list = {};
+    bplist break_list = {};
+    bplist next_list = {};
 
     //Statements -> Statement
     Statements(Statement* st) : Node(st->name) {}

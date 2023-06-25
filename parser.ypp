@@ -86,7 +86,7 @@ Statements: Statement                                                           
           | Statements Statement                                                {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
           ;
           
-Statement: LBRACE {table.open_scope();} Statements RBRACE                       {$$ = new Statement();
+Statement: LBRACE {table.open_scope();} Statements RBRACE                       {$$ = new Statement(dynamic_cast<Statements*>($3));
                                                                                  table.close_scope();}
           | Type ID SC                                                          {$$ = new Statement(dynamic_cast<Type*>($1), $2);}
           | Type ID ASSIGN Exp SC                                               {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
@@ -94,9 +94,9 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE                       
           | Call SC                                                             {$$ = new Statement(dynamic_cast<Call*>($1));}
           | RETURN SC                                                           {$$ = new Statement($1);}
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
-          | IF LPAREN CheckBoolExp RPAREN M Statement                                    {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement                   {$$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<MarkerM*>($6), dynamic_cast<Statement*>($7));
                                                                                  table.close_scope();}
-          | IF LPAREN CheckBoolExp RPAREN M Statement ELSE  {table.close_scope(); table.open_scope();} Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<MarkerM*>($6), dynamic_cast<Statement*>($7), dynamic_cast<MarkerM*>($10), dynamic_cast<Statement*>($11));
                                                                                                                                     table.close_scope();}
           | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}

@@ -28,17 +28,18 @@ Statements: Statement                                                           
           | Statements Statement                                                {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
           ;
 
-Statement: LBRACE {table.open_scope();} Statements RBRACE                       {$$ = new Statement();
+
+Statement: LBRACE {table.open_scope();} Statements RBRACE       V                {$$ = new Statement(); //TODO: check if $3 in the parser.ypp
                                                                                  table.close_scope();}
           | Type ID SC   V                                                       {$$ = new Statement(dynamic_cast<Type*>($1), $2);}
           | Type ID ASSIGN Exp SC   V                                          {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
-          | ID ASSIGN Exp SC   V                                             {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
+          | ID ASSIGN Exp SC   V                                                {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
           | Call SC                                                             {$$ = new Statement(dynamic_cast<Call*>($1));}
           | RETURN SC                                                           {$$ = new Statement($1);}
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
-          | IF LPAREN CheckBoolExp RPAREN M Statement                                    {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | IF LPAREN CheckBoolExp RPAREN M Statement    V                                {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
-          | IF LPAREN CheckBoolExp RPAREN M Statement ELSE  {table.close_scope(); table.open_scope();} Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                                                                     table.close_scope();}
           | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
@@ -51,8 +52,8 @@ Call: ID LPAREN ExpList RPAREN                                                  
     ;
 
 // dont know if we need to use phi or not, or do anything at all. ask someone
-ExpList: Exp         ?                                                           {$$ = new ExpList(dynamic_cast<Exp*>($1));}
-       | Exp COMMA ExpList         ?                                             {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
+ExpList: Exp         V                                                           {$$ = new ExpList(dynamic_cast<Exp*>($1));}
+       | Exp COMMA ExpList         V                                            {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
        ;
 
 Type: INT  V                                                                     {$$ = new Type("int");}

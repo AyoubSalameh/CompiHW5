@@ -139,10 +139,16 @@ void check_exp(Exp* exp) {
 ///******************************************EXP LIST*******************************************
 
 ExpList::ExpList(Exp *e) : Node(e->name) {
+    if(e->type == "bool") {
+        composer.boolValEval(e);
+    }
     this->expressions.push_back(*e);
 }
 
 ExpList::ExpList(Exp *e, ExpList *list) : Node(e->name) {
+    if(e->type == "bool") {
+        composer.boolValEval(e);
+    }
     this->expressions.push_back(*e);
     for( auto& item : list->expressions){
         this->expressions.push_back(item);
@@ -150,6 +156,12 @@ ExpList::ExpList(Exp *e, ExpList *list) : Node(e->name) {
 }
 
 ///****************************************** STATEMENT *******************************************
+
+Statement::Statement(Statements *sts) {
+    this->next_list = sts->next_list;
+    this->break_list = sts->break_list;
+    this->continue_list = sts->continue_list;
+}
 
 //statement -> type ID ;
 Statement::Statement(Type *t, Node *id) {
@@ -271,13 +283,41 @@ Statement::Statement(Node* n) {
 }
 
 
+//statement -> if (exp) statement
+Statement::Statement(Exp* e, MarkerM* body, Statement* st) {
+    if(e->type != "bool") {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+    break_list = st->break_list;
+    continue_list = st->continue_list;
+    buffer.bpatch(e->truelist, body->name);\
+    string end_of_if = composer.new_label("end_of_if_label_");
+    buffer.emit("br label %" + end_of_if);
+    buffer.emit(end_of_if + ":");
+    this->next_list = buffer.merge(st->next_list, e->nextlist);
+    this->next_list = buffer.merge(this->next_list, e->falselist);
+    buffer.bpatch(this->next_list, end_of_if);
 
-Statement::Statement(Exp* e) {
+}
+
+//statement -> if (exp) statement else statement
+Statement::Statement(Exp *e, MarkerM *if_body_marker, Statement *if_st, MarkerM *else_body_marker, Statement *else_st) {
     if(e->type != "bool") {
         output::errorMismatch(yylineno);
         exit(0);
     }
 
+    this->continue_list = buffer.merge(if_st->continue_list, else_st->continue_list);
+    this->break_list = buffer.merge(if_st->break_list, else_st->break_list);
+    buffer.bpatch(e->truelist, if_body_marker->name);
+    buffer.bpatch(e->falselist, else_body_marker->name);
+    string end_of_if_else = composer.new_label("end_of_if_else_label_");
+    buffer.emit("br label %" + end_of_if_else);
+    buffer.emit(end_of_if_else + ":");
+    this->next_list = buffer.merge(if_st->next_list, else_st->next_list);
+    this->next_list = buffer.merge(this->next_list, e->nextlist);
+    buffer.bpatch(this->next_list, end_of_if_else);
 }
 
 
