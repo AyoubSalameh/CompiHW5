@@ -62,7 +62,8 @@ Funcs: /*epsilon*/                                                              
      | FuncDecl Funcs                                                           {$$ = new Funcs();}
      ;
 
-FuncDecl: OverRide RetType ID LPAREN Formals RPAREN {$$ = new FuncDecl(dynamic_cast<OverRide*>($1), dynamic_cast<RetType*>($2), $3, dynamic_cast<Formals*>($5));} LBRACE Statements RBRACE {table.close_scope();}
+FuncDecl: OverRide RetType ID LPAREN Formals RPAREN {$$ = new FuncDecl(dynamic_cast<OverRide*>($1), dynamic_cast<RetType*>($2), $3, dynamic_cast<Formals*>($5));} LBRACE Statements RBRACE {composer.composeAndEmitEndFunc(dynamic_cast<RetType*>($2), dynamic_cast<Statements*>($9));
+                                                                                                                                                                                            table.close_scope();}
         ;
 OverRide: /*epsilon*/                                                           {$$ = new OverRide();}
         | OVERRIDE                                                              {$$ = new OverRide(true);}
