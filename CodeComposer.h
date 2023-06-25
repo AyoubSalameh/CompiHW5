@@ -26,7 +26,7 @@ public:
     //void emitGlobals();
 
     void boolValEval(Exp* exp);
-    void emitBranchNext(Exp* exp);x
+    void emitBranchNext(Exp* exp);
 
     void allocateAndEmitNumB(Exp* exp);
     void allocateAndEmitNum(Exp* exp);
