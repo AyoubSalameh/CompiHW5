@@ -39,7 +39,7 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
           | IF LPAREN CheckBoolExp RPAREN M Statement    V                                {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
-          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE V  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                                                                     table.close_scope();}
           | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
