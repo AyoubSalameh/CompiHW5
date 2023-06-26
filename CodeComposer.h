@@ -39,6 +39,7 @@ public:
     void composeAndEmitOrAnd(Exp* lhs, Exp* exp1, string op, Exp* exp2, string marker);
     void composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_name, Formals *params);
     void composeAndEmitEndFunc(RetType *ret_type, Statements* sts);
+    void composeAndEmitCall(Call* func, string unique_name ,ExpList* args);
     void flipLists(Exp* left, Exp* right);
     void saveFuncArg(Exp* exp, int offset);
     void loadVar(Exp* exp, int offset);

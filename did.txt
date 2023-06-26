@@ -35,9 +35,9 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
           | Type ID SC   V                                                       {$$ = new Statement(dynamic_cast<Type*>($1), $2);}
           | Type ID ASSIGN Exp SC   V                                          {$$ = new Statement(dynamic_cast<Type*>($1), $2, dynamic_cast<Exp*>($4));}
           | ID ASSIGN Exp SC   V                                                {$$ = new Statement($1, dynamic_cast<Exp*>($3));}
-          | Call SC                                                             {$$ = new Statement(dynamic_cast<Call*>($1));}
-          | RETURN SC                                                           {$$ = new Statement($1);}
-          | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
+          | Call SC       V                                                      {$$ = new Statement(dynamic_cast<Call*>($1));}
+          | RETURN SC         V                                                  {$$ = new Statement($1);}
+          | RETURN Exp SC       V                                                {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
           | IF LPAREN CheckBoolExp RPAREN M Statement    V                                {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
        V   | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
@@ -48,8 +48,8 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
        V   | CONTINUE SC                                                         {$$ = new Statement($1);}
           ;
 
-Call: ID LPAREN ExpList RPAREN                                                  {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
-    | ID LPAREN RPAREN                                                          {$$ = new Call($1);}
+Call: ID LPAREN ExpList RPAREN   V                                               {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
+    | ID LPAREN RPAREN           V                                               {$$ = new Call($1);}
     ;
 
 // dont know if we need to use phi or not, or do anything at all. ask someone

@@ -56,9 +56,9 @@ class Call : public Node {
 public:
     std::string type;
     std::string reg = "";
-    bplist truelist = {};
-    bplist falselist = {};
-    bplist nextlist = {};
+    //bplist truelist = {};
+    //bplist falselist = {};
+    //bplist nextlist = {};
 
     /*Call -> ID (ExpList)
     Call -> ID ()*/

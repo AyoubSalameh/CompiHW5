@@ -180,6 +180,36 @@ void CodeComposer::composeAndEmitEndFunc(RetType *ret_type, Statements* sts) {
     buffer.emit("}");
 }
 
+void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* args) {
+    func->reg = new_register();
+    /*not sure if everything shuld be string or i32*/
+    map<string, string> typesMap = {
+            {"int", "i32"},
+            {"byte", "i8" },
+            {"bool", "i1"},
+            {"string", "i8*"}
+            {"void", "void"}};
+
+    string args_list_to_emit = "";
+    string ret_type_to_emit = typesMap[func->type];
+
+    if(args) {
+        //preparing the line that has the types of all args and their regs
+        for (int i = 0; i < args->expressions.size(); i++) {
+            string curr_type = args->expressions[i].type;
+            args_list_to_emit += typesMap[curr_type];
+            args_list_to_emit += " ";
+            args_list_to_emit += args->expressions[i].reg;
+            if (i != args->expressions.size() - 1) {
+                args_list_to_emit += ", ";
+            }
+        }
+    }
+    string prefix = (func->type == "void") ? "", to_string(func->reg) + " = ";
+    buffer.emit(prefix + "call " + ret_type_to_emit + "@" + unique_name + "(" + args_list_to_emit + ")");
+
+}
+
 void CodeComposer::flipLists(Exp *left, Exp *right) {
     //TODO: might need to add bplist(right->list)
     left->truelist = right->falselist;

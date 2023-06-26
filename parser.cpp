@@ -211,6 +211,31 @@ Statement::Statement(Node *id, Exp *e) {
             exit(0);
         }
 
+        map<string, string> typesMap = {
+                {"int", "i32"},
+                {"byte", "i8" },
+                {"bool", "i1"},
+                {"string", "i8*"}
+                {"void", "void"}};
+
+        if(e->type == "bool") {
+            composer.boolValEval(e);
+        }
+
+        string converted_reg = composer.new_register();
+
+        if(e->type == "byte" && ret_type == "int") {
+            buffer.emit(converted_reg + " = zext i8 " + e->reg + " to i32");
+        }
+        if(e->type == "int" && ret_type == "byte") {
+            buffer.emit(converted_reg + " = trunc i32 " + e->reg + " to i8");
+        }
+        if(e->type == ret_type) {
+            converted_reg = e->reg;
+        }
+
+        buffer.emit("ret " + typesMap[ret_type] + " " + converted_reg);
+
     }
     else{
         symbol_table_entry* entry = table.get_variable(id->name);
@@ -243,28 +268,12 @@ Statement::Statement(Node* n) {
             exit(0);
         }
 
-        
-        //if(table.tables_stack.back().is_loop)
-        //{
-        /*TODO: not sure this check is the right thing to do:
-        int foo(){
-            while(true)
-            {
-            return;
-            }
-        }
-        this return does not match the function, we want an error.
-        */
-        //    return;
-        //}  
-        
-
-
         if (ret_type != "void") {
             output::errorMismatch(yylineno);
             exit(0);
         }
 
+        buffer.emit("ret void");
     }
 
     if(n->name == "break") {
@@ -376,7 +385,10 @@ Call::Call(Node *id, ExpList *params)  : Node(id->name) {
             par.push_back(params->expressions[i].type);
         }
     }
-    this->type = table.get_function(id->name, par)->type;
+    symbol_table_entry* entry = table.get_function(id->name, par);
+    this->type = entry->type;
+    string unique_name = entry->uniqe_name;
+    composer.composeAndEmitCall(this, unique_name, params);
     /*errors(if there are any) are thrown from within get_functions*/
 }
 
