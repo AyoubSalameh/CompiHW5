@@ -320,12 +320,20 @@ Statement::Statement(Exp *e, MarkerM *if_body_marker, Statement *if_st, MarkerM 
     buffer.bpatch(this->next_list, end_of_if_else);
 }
 
-Statement::Statement(Exp *e, MarkerM *cond_marker, Statement *body, MarkerM *body_marker) {
+Statement::Statement(MarkerM *cond_marker, Exp *e,  MarkerM *body_marker, Statement *body) {
     if(e->type != "bool") {
         output::errorMismatch(yylineno);
         exit(0);
     }
-
+    buffer.emit("br label " + cond_marker->name);
+    string end_while = composer.new_label("end_while_");
+    buffer.emit(end_while + ":");
+    buffer.bpatch(e->truelist, body_marker->name);
+    buffer.bpatch(e->falselist, end_while);
+    buffer.bpatch(e->nextlist, end_while);
+    buffer.bpatch(body->continue_list, cond_marker->name);
+    buffer.bpatch(body->break_list, end_while);
+    buffer.bpatch(body->next_list, end_while);
 
 }
 

@@ -42,7 +42,7 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
                                                                                  table.close_scope();}
        V   | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                                                                     table.close_scope();}
-          | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
+       V  | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
           | BREAK SC                                                            {$$ = new Statement($1);}
           | CONTINUE SC                                                         {$$ = new Statement($1);}
