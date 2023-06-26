@@ -232,7 +232,7 @@ Statement::Statement(Node *id, Exp *e) {
 }
 
 
-
+//statement -> break ; / continue ; / return ;
 Statement::Statement(Node* n) {
     if(n->name == "return") {
         //string ret_type = table.tables_stack.back().func_ret_type;
@@ -272,12 +272,18 @@ Statement::Statement(Node* n) {
             output::errorUnexpectedBreak(yylineno);
             exit(0);
         }
+        int break_address = buffer.emit("br label @");
+        this->break_list = buffer.makelist(bplist_pair(break_address, FIRST));
+        //TODO: next_list may be not needed, make sure
+        this->next_list = buffer.makelist(bplist_pair(break_address, FIRST));
     }
     if(n->name == "continue") {
         if(!(table.checkLoop())) {
             output::errorUnexpectedContinue(yylineno);
             exit(0);
         }
+        int continue_address = buffer.emit("br label @");
+        this->continue_list = buffer.makelist(bplist_pair(continue_address, FIRST));
     }
 
 }
@@ -320,6 +326,7 @@ Statement::Statement(Exp *e, MarkerM *if_body_marker, Statement *if_st, MarkerM 
     buffer.bpatch(this->next_list, end_of_if_else);
 }
 
+//statement -> while (exp) { statement } ;
 Statement::Statement(MarkerM *cond_marker, Exp *e,  MarkerM *body_marker, Statement *body) {
     if(e->type != "bool") {
         output::errorMismatch(yylineno);

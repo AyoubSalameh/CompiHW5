@@ -44,8 +44,8 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
                                                                                                                                     table.close_scope();}
        V  | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
-          | BREAK SC                                                            {$$ = new Statement($1);}
-          | CONTINUE SC                                                         {$$ = new Statement($1);}
+       V   | BREAK SC                                                            {$$ = new Statement($1);}
+       V   | CONTINUE SC                                                         {$$ = new Statement($1);}
           ;
 
 Call: ID LPAREN ExpList RPAREN                                                  {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
