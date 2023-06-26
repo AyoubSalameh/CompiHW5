@@ -22,7 +22,7 @@ FormalsList::FormalsList(FormalDecl* dec, FormalsList* list) : Node(dec->name){
     }
 }
 
-FormalsList::sList(FormalDecl *dec) : Node(dec->name) {
+FormalsList::FormalsList(FormalDecl *dec) : Node(dec->name) {
     this->param_list.push_back(*dec);
 }
 
