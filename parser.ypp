@@ -100,7 +100,7 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE                       
           | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE {composer.emitBranchNext(dynamic_cast<Exp*>($3));
                                                                     table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<MarkerM*>($6), dynamic_cast<Statement*>($7), dynamic_cast<MarkerM*>($10), dynamic_cast<Statement*>($11));
                                                                                                                                     table.close_scope();}
-          | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
+          | WHILE LPAREN MarkerM CheckBoolExp RPAREN {table.open_scope(true);} MarkerM Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
           | BREAK SC                                                            {$$ = new Statement($1);}
           | CONTINUE SC                                                         {$$ = new Statement($1);}

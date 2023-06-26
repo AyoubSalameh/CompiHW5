@@ -1,28 +1,29 @@
-Program: Funcs                                                                  {$$ = new Program();}
+Program: Funcs V                                                                 {$$ = new Program();}
         ;
-Funcs: /*epsilon*/                                                              {$$ = new Funcs();}
-     | FuncDecl Funcs                                                           {$$ = new Funcs();}
+Funcs: /*epsilon*/      V                                                        {$$ = new Funcs();}
+     | FuncDecl Funcs   V                                                        {$$ = new Funcs();}
      ;
 
 FuncDecl: OverRide RetType ID LPAREN Formals RPAREN {$$ = new FuncDecl(dynamic_cast<OverRide*>($1), dynamic_cast<RetType*>($2), $3, dynamic_cast<Formals*>($5));} LBRACE Statements RBRACE {table.close_scope();}
-        ;
-OverRide: /*epsilon*/                                                           {$$ = new OverRide();}
-        | OVERRIDE                                                              {$$ = new OverRide(true);}
+        ; V
+
+OverRide: /*epsilon*/   ?                                                        {$$ = new OverRide();}
+        | OVERRIDE      ?                                                        {$$ = new OverRide(true);}
         ;
 
-RetType: Type                                                                   {$$ = new RetType(dynamic_cast<Type*>($1)->type);}
-       | VOID                                                                   {$$ = new RetType("void");}
+RetType: Type         V                                                          {$$ = new RetType(dynamic_cast<Type*>($1)->type);}
+       | VOID         V                                                          {$$ = new RetType("void");}
        ;
 
-Formals: /*epsilon*/                                                            {$$ = new Formals();}
-           | FormalsList                                                        {$$ = new Formals(dynamic_cast<FormalsList*>($1),yylineno);}
+Formals: /*epsilon*/   V                                                         {$$ = new Formals();}
+           | FormalsList            V                                            {$$ = new Formals(dynamic_cast<FormalsList*>($1),yylineno);}
        ;
 
-FormalsList: FormalDecl                                                         {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1));}
-           | FormalDecl COMMA FormalsList                                       {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1), dynamic_cast<FormalsList*>($3));}
+FormalsList: FormalDecl   V                                                      {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1));}
+           | FormalDecl COMMA FormalsList     V                                  {$$ = new FormalsList(dynamic_cast<FormalDecl*>($1), dynamic_cast<FormalsList*>($3));}
            ;
 
-FormalDecl: Type ID                                                             {$$ = new FormalDecl(dynamic_cast<Type*>($1), $2);}
+FormalDecl: Type ID   V                                                          {$$ = new FormalDecl(dynamic_cast<Type*>($1), $2);}
             ;
 Statements: Statement  V                                                         {$$ = new Statements(dynamic_cast<Statement*>($1));}
           | Statements Statement      V                                          {$$ = new Statements(dynamic_cast<Statements*>($1), dynamic_cast<Statement*>($2));}
@@ -39,7 +40,7 @@ Statement: LBRACE {table.open_scope();} Statements RBRACE       V               
           | RETURN Exp SC                                                       {$$ = new Statement($1, dynamic_cast<Exp*>($2) );}
           | IF LPAREN CheckBoolExp RPAREN M Statement    V                                {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}
-          | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE V  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
+       V   | IF LPAREN CheckBoolExp RPAREN M MarkerM Statement ELSE  {table.close_scope(); table.open_scope();} MarkerM Statement      {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                                                                     table.close_scope();}
           | WHILE LPAREN CheckBoolExp RPAREN {table.open_scope(true);} Statement         {$$ = new Statement(dynamic_cast<Exp*>($3));
                                                                                  table.close_scope();}

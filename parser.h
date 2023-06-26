@@ -157,6 +157,9 @@ public:
     //statement -> if ( exp ) statement else statement
     Statement(Exp* e, MarkerM* if_body_marker, Statement* if_st, MarkerM* else_body_marker, Statement* else_st);
 
+    //statement -> while (exp) { statement } ;
+    Statement(Exp* e, MarkerM* cond_marker, Statement* body, MarkerM* body_marker);
+
     ~Statement() = default;
 
 };

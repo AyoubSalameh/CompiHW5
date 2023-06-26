@@ -22,7 +22,7 @@ FormalsList::FormalsList(FormalDecl* dec, FormalsList* list) : Node(dec->name){
     }
 }
 
-FormalsList::FormalsList(FormalDecl *dec) : Node(dec->name) {
+FormalsList::sList(FormalDecl *dec) : Node(dec->name) {
     this->param_list.push_back(*dec);
 }
 
@@ -318,6 +318,15 @@ Statement::Statement(Exp *e, MarkerM *if_body_marker, Statement *if_st, MarkerM 
     this->next_list = buffer.merge(if_st->next_list, else_st->next_list);
     this->next_list = buffer.merge(this->next_list, e->nextlist);
     buffer.bpatch(this->next_list, end_of_if_else);
+}
+
+Statement::Statement(Exp *e, MarkerM *cond_marker, Statement *body, MarkerM *body_marker) {
+    if(e->type != "bool") {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+
+
 }
 
 ///****************************************** STATEMENTS *******************************************
