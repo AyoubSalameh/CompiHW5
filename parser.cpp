@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <map>
 
 extern table_stack table;
 extern CodeComposer composer;
@@ -215,7 +216,7 @@ Statement::Statement(Node *id, Exp *e) {
                 {"int", "i32"},
                 {"byte", "i8" },
                 {"bool", "i1"},
-                {"string", "i8*"}
+                {"string", "i8*"},
                 {"void", "void"}};
 
         if(e->type == "bool") {

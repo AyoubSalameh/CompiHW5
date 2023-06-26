@@ -187,7 +187,7 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
             {"int", "i32"},
             {"byte", "i8" },
             {"bool", "i1"},
-            {"string", "i8*"}
+            {"string", "i8*"},
             {"void", "void"}};
 
     string args_list_to_emit = "";
@@ -205,7 +205,9 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
             }
         }
     }
-    string prefix = (func->type == "void") ? "", to_string(func->reg) + " = ";
+    
+    string prefix = (func->type == "void") ? "" : ((func->reg) + " = ");
+
     buffer.emit(prefix + "call " + ret_type_to_emit + "@" + unique_name + "(" + args_list_to_emit + ")");
 
 }

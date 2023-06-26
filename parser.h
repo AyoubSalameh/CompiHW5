@@ -100,7 +100,8 @@ public:
     Exp(Node* id);
 
     //exp -> call
-    Exp(Call* c) : Node(c->name), type(c->type), reg(c->reg), truelist(c->truelist), falselist(c->falselist), nextlist(c->nextlist) {}
+    //Exp(Call* c) : Node(c->name), type(c->type), reg(c->reg), truelist(c->truelist), falselist(c->falselist), nextlist(c->nextlist) {}
+    Exp(Call* c) : Node(c->name), type(c->type), reg(c->reg) {}
 
     ~Exp() = default;
 };

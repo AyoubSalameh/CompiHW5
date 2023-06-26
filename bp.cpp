@@ -34,7 +34,7 @@ CodeBuffer::CodeBuffer() : buffer(), globalDefs() {
     this->emit("br i1 %result, label %divided_by_zero, label %end");
     this->emit("divided_by_zero:");
     this->emit("%ptr = getelementptr [23 x i8], [23 x i8]* @.DIVISION_ERROR, i32 0, i32 0");
-    this->emit("call i32 (i8*, ...) @print(i8* %ptr)");
+    this->emit("call void (i8*, ...) @print(i8* %ptr)");
     this->emit("call void @exit(i32 0)");
     this->emit("end:");
     this->emit("ret void");
