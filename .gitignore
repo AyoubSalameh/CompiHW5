@@ -35,3 +35,17 @@
 *.ll
 
 t0.in
+/.vscode
+
+.gitignore
+t01.res
+
+alloca_example.llvm
+define_example.llvm
+fibonacci.llvm
+phi_example.llvm
+print_1_to_100.llvm
+hw5
+lex.yy.c
+parser.tab.cpp
+parser.tab.hpp
