@@ -1,5 +1,6 @@
 #include "CodeComposer.h"
 #include "map"
+#include <algorithm>
 
 extern CodeComposer composer;
 extern CodeBuffer buffer;
@@ -78,6 +79,12 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     //    %format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
     string get_reg = "getelementptr" + arrSize + ", " + arrSize + "* " + temp_reg + ", i32 0, i32 0" ;
     str.replace(0, 1, "%"); //%ayoub
+
+    /*when taking the lexema of a string, we might have spaces in it, so leaving it like that will
+    put spaces inside the register name, and we dont want that 
+    this it the replace func from algoritm library, not the dame one as the line befor*/
+    std::replace(str.begin(), str.end(), ' ', '_');
+
     buffer.emit(str + "_ptr = " + get_reg);
     exp->reg = temp_reg + "_ptr";
 }
