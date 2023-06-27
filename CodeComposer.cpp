@@ -164,6 +164,7 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
 }
 
 void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
+    //TODO: support types (maybe one or both are byte)
     lhs->reg = new_register();
     string op_cmd;
     if (op == "<") op_cmd = "slt";
