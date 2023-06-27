@@ -45,7 +45,7 @@ void CodeComposer::boolValEval(Exp *exp) {
     {
         exp->reg = new_register();
     }
-    buffer.emit(exp->reg + " = phi i32 [1, %" + true_label + "], [0, %" + false_label + "]");
+    buffer.emit(exp->reg + " = phi i1 [1, %" + true_label + "], [0, %" + false_label + "]");
 
     bplist next = buffer.merge(buffer.makelist(bplist_pair(true_address, FIRST)),
                                buffer.makelist(bplist_pair(false_address, FIRST)));
