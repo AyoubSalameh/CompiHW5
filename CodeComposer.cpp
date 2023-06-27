@@ -80,7 +80,7 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     string str = exp->name;
     str.pop_back();         //"ayoub" -> "ayoub
     string arrSize = "[" + to_string(str.size()) + " x i8]";
-    buffer.emitGlobal(temp_reg + "constant" + arrSize + " c" + str + "\\00\"");
+    buffer.emitGlobal(temp_reg + " = constant" + arrSize + " c" + str + "\\00\"");
 
     //    %format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
     string get_reg = "getelementptr" + arrSize + ", " + arrSize + "* " + temp_reg + ", i32 0, i32 0" ;
@@ -93,10 +93,10 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
 
     /*we also want each register to be assigned to only once, so we need the ptr reg to be different
     even if the string itself is the same, so we will add a reg to it*/
-    str += "_" + this->new_num_of_register();
+    str += "_ptr" + this->new_num_of_register();
 
-    buffer.emit(str + "_ptr = " + get_reg);
-    exp->reg = temp_reg + "_ptr";
+    buffer.emit(str + " = " + get_reg);
+    exp->reg = str;
 }
 
 void CodeComposer::allocateAndEmitBool(Exp *exp) {
