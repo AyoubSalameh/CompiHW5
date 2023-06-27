@@ -120,9 +120,39 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
         } else {
             op_cmd == "sdiv";
         }
-        buffer.emit("call void @divide_by_zero_check(i32 " + exp2->reg +")");
+
+        if(exp2->type == "byte"){
+            string converted_reg_for_check_zero = new_register();
+            buffer.emit(converted_reg_for_check_zero + " = zext i8 " + exp2->reg + " to i32");
+            buffer.emit("call void @divide_by_zero_check(i32 " + converted_reg_for_check_zero +")");
+        }
+        else{
+            buffer.emit("call void @divide_by_zero_check(i32 " + exp2->reg +")");
+        }
     }
-    buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    if( lhs->type == "byte"){
+        /*this means that both exp1, and exp2 are bytes.
+        llvm is spposed to handle numeric overflow on its own (at least thats what gabeta says) */
+        buffer.emit(lhs->reg + " = " + op_cmd + " i8 " + exp1->reg + ", " + exp2->reg);
+    }
+    else{
+        if(exp1->type == "int" && exp2->type == "int"){
+            buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+        }
+        else{
+            /*one is int and the other is byte, we want to convert the byte to int ans use it instead.
+            %result = zext i8 %byte to i32.*/
+            string reg_to_convert = (exp1->type == "byte") ? exp1->reg : exp2->reg;
+            string the_int_one = (exp1->type == "byte") ? exp2->reg : exp1->reg;
+
+            string converted_reg = new_register();
+            buffer.emit(converted_reg + " = zext i8 " + reg_to_convert + " to i32");
+            
+            buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + converted_reg + ", " + the_int_one);
+        }
+    }
+    
+    /*
     //TODO might need a different emit for byte
     //this code is for numeric surfing
     //TODO check if we can use trunc by asking
@@ -130,7 +160,7 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
         string orig = lhs->reg;
         lhs->reg = new_register();
         buffer.emit(lhs->reg + " = trunc i32 " + orig + " to i8");
-    }
+    }*/
 }
 
 void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
