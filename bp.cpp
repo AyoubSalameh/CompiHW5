@@ -31,12 +31,13 @@ CodeBuffer::CodeBuffer() : buffer(), globalDefs() {
     //function to check division by zero
     this->emit("define void @divide_by_zero_check(i32) {");
     this->emit("%result = icmp eq i32 %0 ,0");
-    this->emit("br i1 %result, label %divided_by_zero, label %end");
+    this->emit("br i1 %result, label %divided_by_zero, label %divided_by_zero_end");
     this->emit("divided_by_zero:");
-    this->emit("%ptr = getelementptr [23 x i8], [23 x i8]* @.DIVISION_ERROR, i32 0, i32 0");
-    this->emit("call void @print(i8* %ptr)");
+    this->emit("%ptr_div_by_zero = getelementptr [23 x i8], [23 x i8]* @.DIVISION_ERROR, i32 0, i32 0");
+    this->emit("call void @print(i8* %ptr_div_by_zero)");
     this->emit("call void @exit(i32 0)");
-    this->emit("end:");
+    this->emit("ret void");
+    this->emit("divided_by_zero_end:");
     this->emit("ret void");
     this->emit("}");
 }
