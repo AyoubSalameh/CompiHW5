@@ -23,6 +23,7 @@ public:
     static CodeComposer &instance();
 
     string new_register();
+    string new_num_of_register();
     string new_global_register();
     string new_label(string label = "label_");
     //void emitGlobals();

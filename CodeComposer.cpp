@@ -16,6 +16,12 @@ string CodeComposer::new_register() {
     return reg;
 }
 
+string CodeComposer::new_num_of_register() {
+    string reg = to_string(cur_register);
+    cur_register++;
+    return reg;
+}
+
 string CodeComposer::new_global_register() {
     string reg = "@var" + to_string(cur_register);
     cur_register++;
@@ -84,6 +90,10 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
     put spaces inside the register name, and we dont want that 
     this it the replace func from algoritm library, not the dame one as the line befor*/
     std::replace(str.begin(), str.end(), ' ', '_');
+
+    /*we also want each register to be assigned to only once, so we need the ptr reg to be different
+    even if the string itself is the same, so we will add a reg to it*/
+    str += "_" + this->new_num_of_register();
 
     buffer.emit(str + "_ptr = " + get_reg);
     exp->reg = temp_reg + "_ptr";
