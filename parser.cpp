@@ -412,8 +412,8 @@ FuncDecl::FuncDecl(OverRide* override, RetType* rt, Node* id, Formals* params){
     //builds vector params
 
     string uniqe_func_name = (table.get_function(id->name, types))->uniqe_name;
-    composer.top_function_rbp = composer.allocaFunctionStack();
     composer.composeAndEmitFuncDecl(rt,uniqe_func_name,params);
+    composer.top_function_rbp = composer.allocaFunctionStack();
 
 }
 
