@@ -150,6 +150,7 @@ void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_n
     {"int", "i32"},
     {"byte", "i8" },
     {"bool", "i1"},
+    {"void" , "void"},
     {"string", "i8*"}};
 
     string args_list_to_emit = "";
