@@ -156,7 +156,7 @@ int main(){
     
     int parse = yyparse();
     table.final_check();
-
+    buffer.printGlobalBuffer();
     buffer.printCodeBuffer();
     return parse;
 }
