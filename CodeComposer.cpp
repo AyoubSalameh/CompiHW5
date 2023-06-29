@@ -67,7 +67,7 @@ void CodeComposer::emitBranchNext(Exp* exp){
 
 void CodeComposer::allocateAndEmitNumB(Exp *exp) {
     exp->reg = this->new_register();
-    buffer.emit(exp->reg + " = add i32 " + exp->name + ", 0");
+    buffer.emit(exp->reg + " = add i8 " + exp->name + ", 0");
 }
 
 void CodeComposer::allocateAndEmitNum(Exp *exp) {
