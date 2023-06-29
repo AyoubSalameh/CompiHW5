@@ -84,19 +84,11 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
 
     //    %format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
     string get_reg = "getelementptr" + arrSize + ", " + arrSize + "* " + temp_reg + ", i32 0, i32 0" ;
-    str.replace(0, 1, "%"); //%ayoub
 
-    /*when taking the lexema of a string, we might have spaces in it, so leaving it like that will
-    put spaces inside the register name, and we dont want that 
-    this it the replace func from algoritm library, not the dame one as the line befor*/
-    std::replace(str.begin(), str.end(), ' ', '_');
-
-    /*we also want each register to be assigned to only once, so we need the ptr reg to be different
-    even if the string itself is the same, so we will add a reg to it*/
-    str += "_ptr" + this->new_num_of_register();
-
-    buffer.emit(str + " = " + get_reg);
-    exp->reg = str;
+    string new_reg = new_register();
+    buffer.emit(new_reg + " = " + get_reg);
+    exp->reg = new_reg;
+    
 }
 
 void CodeComposer::allocateAndEmitBool(Exp *exp) {
