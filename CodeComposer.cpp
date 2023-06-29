@@ -140,7 +140,7 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
             buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
         }
         else{
-            /*one is int and the other is byte, we want to convert the byte to int ans use it instead.
+            /*one is int and the other is byte, we want to convert the byte to int and use it instead.
             %result = zext i8 %byte to i32.*/
             string reg_to_convert = (exp1->type == "byte") ? exp1->reg : exp2->reg;
             string the_int_one = (exp1->type == "byte") ? exp2->reg : exp1->reg;
@@ -164,7 +164,6 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
 }
 
 void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
-    //TODO: support types (maybe one or both are byte)
     lhs->reg = new_register();
     string op_cmd;
     if (op == "<") op_cmd = "slt";
@@ -174,10 +173,24 @@ void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     if (op == "!=") op_cmd = "ne";
     if (op == "==") op_cmd = "eq";
 
-    buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    if(exp1->type == "int" && exp2->type == "int") {
+        buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + exp1->reg + ", " + exp2->reg);
+    }
+    else if(exp1->type == "byte" && exp2->type == "byte") {
+        buffer.emit(lhs->reg + " = icmp " + op_cmd + " i8 " + exp1->reg + ", " + exp2->reg);
+    }
+    else {
+        string reg_to_convert = (exp1->type == "byte") ? exp1->reg : exp2->reg;
+        string the_int_one = (exp1->type == "byte") ? exp2->reg : exp1->reg;
+        string converted_reg = new_register();
+        buffer.emit(converted_reg + " = zext i8 " + reg_to_convert + " to i32");
+
+        buffer.emit(lhs->reg + " = icmp " + op_cmd + " i32 " + converted_reg + ", " + the_int_one);
+    }
+
     int hole_address = buffer.emit("br i1 " + lhs->reg + ", label @, label @");
-    lhs->truelist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, FIRST));
-    lhs->falselist = buffer.makelist(pair<int,BranchLabelIndex>(hole_address, SECOND));
+    lhs->truelist = buffer.makelist(pair<int, BranchLabelIndex>(hole_address, FIRST));
+    lhs->falselist = buffer.makelist(pair<int, BranchLabelIndex>(hole_address, SECOND));
 }
 
 void CodeComposer::composeAndEmitOrAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2, string marker) {
