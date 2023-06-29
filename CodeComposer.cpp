@@ -223,12 +223,13 @@ void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_n
 void CodeComposer::composeAndEmitEndFunc(RetType *ret_type, Statements* sts) {
     //TODO:  complete - if we have time we should save a list<statement>n statements,
     //and check whether the last one is a return statment.
-    if (ret_type->type == "void") {
-        buffer.emit("ret void");
-    } else {
-        //TODO: check if we need to emit a different line for each type
-        buffer.emit("ret i32 0");
-    }
+     map<string, string> retTypesMap = {
+        {"int", "i32 0"},
+        {"byte", "i8 0" },
+        {"bool", "i1 0"},
+        {"void", "void"}};
+
+    buffer.emit("ret " + retTypesMap[ret_type->type]);
     buffer.emit("}");
 }
 

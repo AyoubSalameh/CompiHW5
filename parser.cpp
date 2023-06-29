@@ -107,6 +107,7 @@ Exp::Exp(Node *n, std::string type) : Node(n->name), type(type) {
 
 }
 
+//Exp -> (Type) Exp
 Exp::Exp(Type *t, Exp *e) : Node(e->name) {
     string e_type = e->type;
     if((e_type != "byte" && e_type != "int") || (t->type != "byte" && t->type != "int")) {
@@ -114,7 +115,21 @@ Exp::Exp(Type *t, Exp *e) : Node(e->name) {
         exit(0);
     }
     this->type = t->type;
-    this->reg = e->reg;
+
+    if( t->type == e->type) {
+        this->reg = e->reg;
+    }
+    
+    else if( t->type == "byte" && e->type == "int"){ 
+        string converted_reg = composer.new_register();
+        buffer.emit(converted_reg + " = trunc i32 " + e->reg + " to i8");
+        this->reg = converted_reg;
+    }
+    else if( t->type == "int" && e->type == "byte" ) {
+        string converted_reg = composer.new_register();
+        buffer.emit(converted_reg + " = zext i8 " + e->reg + " to i32");
+        this->reg = converted_reg;
+    }
 }
 
 //exp -> id
