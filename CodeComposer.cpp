@@ -234,7 +234,7 @@ void CodeComposer::composeAndEmitEndFunc(RetType *ret_type, Statements* sts) {
     buffer.emit("}");
 }
 
-void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* args) {
+void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* args, vector<string>& func_params) {
     func->reg = new_register();
     /*not sure if everything shuld be string or i32*/
     map<string, string> typesMap = {
@@ -250,17 +250,35 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
     if(args) {
         //preparing the line that has the types of all args and their regs
         for (int i = 0; i < args->expressions.size(); i++) {
-            string curr_type = args->expressions[i].type;
-            args_list_to_emit += typesMap[curr_type];
-            args_list_to_emit += " ";
-            args_list_to_emit += args->expressions[i].reg;
+            string curr_arg_type = args->expressions[i].type;
+            string curr_func_param_type = func_params[i];
+            if( curr_arg_type == curr_func_param_type) {
+                args_list_to_emit += typesMap[curr_arg_type];
+                args_list_to_emit += " ";
+                args_list_to_emit += args->expressions[i].reg;
+            }
+            else if( curr_func_param_type == "int" && curr_arg_type == "byte") {
+                string converted_reg = new_register();
+                buffer.emit(converted_reg + " = zext i8 " + args->expressions[i].reg + " to i32");
+                args_list_to_emit += typesMap[curr_func_param_type];
+                args_list_to_emit += " ";
+                args_list_to_emit += converted_reg;
+            }
+            else if( curr_func_param_type == "byte" && curr_arg_type == "int" ) {
+                string converted_reg = new_register();
+                buffer.emit(converted_reg + " = trunc i32 " + args->expressions[i].reg + " to i8");
+                args_list_to_emit += typesMap[curr_func_param_type];
+                args_list_to_emit += " ";
+                args_list_to_emit += converted_reg;
+            }
+
             if (i != args->expressions.size() - 1) {
                 args_list_to_emit += ", ";
             }
         }
     }
     
-    string prefix = (func->type == "void") ? "" : ((func->reg) + " = ");
+    string prefix = (func->type == "void") ? " " : ((func->reg) + " = ");
 
     buffer.emit(prefix + "call " + ret_type_to_emit + "@" + unique_name + "(" + args_list_to_emit + ")");
 

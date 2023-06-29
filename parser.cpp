@@ -398,7 +398,7 @@ Call::Call(Node *id, ExpList *params)  : Node(id->name) {
     symbol_table_entry* entry = table.get_function(id->name, par);
     this->type = entry->type;
     string unique_name = entry->uniqe_name;
-    composer.composeAndEmitCall(this, unique_name, params);
+    composer.composeAndEmitCall(this, unique_name, params, entry->params);
     /*errors(if there are any) are thrown from within get_functions*/
 }
 
