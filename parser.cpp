@@ -127,6 +127,15 @@ Exp::Exp(Node *id) : Node(id->name) {
     } else {
         composer.loadVar(this, offset);
     }
+
+    if(this->type == "bool") {
+        int address = buffer.emit("br i1 " + this->reg + ", label @, label @");
+        bplist temp_true = buffer.makelist(bplist_pair(address, FIRST));
+        this->truelist = buffer.merge(this->truelist, temp_true);
+        bplist temp_false = buffer.makelist(bplist_pair(address, SECOND));
+        this->falselist = buffer.merge(this->falselist, temp_false);
+
+    }
 }
 
 
