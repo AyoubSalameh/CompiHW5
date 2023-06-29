@@ -351,7 +351,7 @@ Statement::Statement(MarkerM *cond_marker, Exp *e,  MarkerM *body_marker, Statem
         output::errorMismatch(yylineno);
         exit(0);
     }
-    buffer.emit("br label " + cond_marker->name);
+    buffer.emit("br label %" + cond_marker->name);
     string end_while = composer.new_label("end_while_");
     buffer.emit(end_while + ":");
     buffer.bpatch(e->truelist, body_marker->name);
