@@ -49,3 +49,6 @@ hw5
 lex.yy.c
 parser.tab.cpp
 parser.tab.hpp
+
+/tests
+
