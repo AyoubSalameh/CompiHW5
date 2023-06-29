@@ -108,9 +108,9 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
     if (op == "*") op_cmd = "mul";
     if (op == "/"){
         if(lhs->type == "byte") {
-            op_cmd == "udiv";
+            op_cmd = "udiv";
         } else {
-            op_cmd == "sdiv";
+            op_cmd = "sdiv";
         }
 
         if(exp2->type == "byte"){
