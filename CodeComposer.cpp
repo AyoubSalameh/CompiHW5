@@ -307,6 +307,11 @@ void CodeComposer::loadVar(Exp *exp, int offset) {
         buffer.emit(convetred_reg + " = trunc i32 " + reg + " to i8");
         exp->reg = convetred_reg;
     }
+    else if(exp->type == "bool") {
+        string convetred_reg = new_register();
+        buffer.emit(convetred_reg + " = trunc i32 " + reg + " to i1");
+        exp->reg = convetred_reg;
+    }
     else{
         exp->reg = reg;
     }
@@ -323,7 +328,12 @@ void CodeComposer::storeVar(Exp *exp, int offset) {
         buffer.emit(convetred_reg + " = zext i8 " + exp->reg + " to i32");
         buffer.emit("store i32 " + convetred_reg + ", i32* " + address_ptr);
     }
-    else {
+    else if(exp->type == "bool"){
+        string convetred_reg = new_register();
+        buffer.emit(convetred_reg + " = zext i1 " + exp->reg + " to i32");
+        buffer.emit("store i32 " + convetred_reg + ", i32* " + address_ptr);
+    }
+    else{
         buffer.emit("store i32 " + exp->reg + ", i32* " + address_ptr);
     }
 }
