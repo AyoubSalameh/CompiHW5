@@ -161,8 +161,18 @@ void check_exp(Exp* exp) {
     }
 }
 
+ExpComma::ExpComma(Exp* exp)
+{
+    my_exp = exp;
+    if(exp->type == "bool") {
+        composer.boolValEval(exp);
+    }
+}
+
+
 ///******************************************EXP LIST*******************************************
 
+//ExpList -> Exp
 ExpList::ExpList(Exp *e) : Node(e->name) {
     if(e->type == "bool") {
         composer.boolValEval(e);
@@ -170,14 +180,20 @@ ExpList::ExpList(Exp *e) : Node(e->name) {
     this->expressions.push_back(*e);
 }
 
-ExpList::ExpList(Exp *e, ExpList *list) : Node(e->name) {
-    if(e->type == "bool") {
-        composer.boolValEval(e);
-    }
+//ExpList -> ExpCOMMA ExpList  
+ExpList::ExpList(ExpComma *ec, ExpList *list) : Node(ec->my_exp->name) {
+    Exp* e = ec->my_exp;
+    //if(e->type == "bool") {
+    //    composer.boolValEval(e);
+    //}
+    this->expressions = list->expressions;
+    this->expressions.insert(this->expressions.begin(), *e);
+    /*
     this->expressions.push_back(*e);
     for( auto& item : list->expressions){
         this->expressions.push_back(item);
     }
+    */
 }
 
 ///****************************************** STATEMENT *******************************************
@@ -197,6 +213,8 @@ Statement::Statement(Type *t, Node *id) {
     if(t->type == "bool") {
         temp.name = "false";
         composer.allocateAndEmitBool(&temp);
+        //TAL
+        composer.storeVar(&temp, offset);
     } else {
         temp.name = "0";
         composer.allocateAndEmitNum(&temp);

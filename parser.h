@@ -106,6 +106,13 @@ public:
     ~Exp() = default;
 };
 
+struct ExpComma : public Node{
+    /*i think we need this marker in order to handle the right order of "phi" instr jumps when needed. 
+    i dont really understand why, but it wont work without it*/
+    Exp* my_exp;
+    ExpComma(Exp* exp); // ExpComma -> Exp COMMA
+};
+
 /*this was added to check the type of exp before going in statement.
 checking the type in statement led to a wrong yyline printing.*/
 void check_exp(Exp* exp);
@@ -119,7 +126,7 @@ public:
     ExpList(Exp* e);
 
     //explist -> exp , explist
-    ExpList(Exp* e, ExpList* list);
+    ExpList(ExpComma* ec, ExpList* list);
 
     ~ExpList() = default;
 };
