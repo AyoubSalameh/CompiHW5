@@ -283,9 +283,9 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
         }
     }
     
-    string prefix = (func->type == "void") ? " " : ((func->reg) + " = ");
+    string prefix = (func->type == "void") ? "" : ((func->reg) + " = ");
 
-    buffer.emit(prefix + "call " + ret_type_to_emit + "@" + unique_name + "(" + args_list_to_emit + ")");
+    buffer.emit(prefix + "call " + ret_type_to_emit + " @" + unique_name + "(" + args_list_to_emit + ")");
 
 }
 
