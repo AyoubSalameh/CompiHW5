@@ -111,7 +111,7 @@ Call: ID LPAREN ExpList RPAREN                                                  
     ;
     
 ExpList: Exp                                                                    {$$ = new ExpList(dynamic_cast<Exp*>($1));}
-       | Exp COMMA ExpList                                                      {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));}
+       | ExpCOMMA ExpList                                                      {$$ = new ExpList(dynamic_cast<ExpComma*>($1), dynamic_cast<ExpList*>($2));}
        ;
        
 Type: INT                                                                       {$$ = new Type("int");}
@@ -140,6 +140,7 @@ Exp: LPAREN Exp RPAREN                                                          
 M:                                                                              {table.open_scope();}
 CheckBoolExp: Exp                                                               {check_exp(dynamic_cast<Exp*>($1));}
 MarkerM:                                                                        {$$ = new MarkerM();}
+ExpCOMMA: Exp COMMA                                                             {$$ = new ExpComma(dynamic_cast<Exp*>($1));}
 
 %%
 
