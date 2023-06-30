@@ -214,10 +214,13 @@ Statement::Statement(Type *t, Node *id) {
         temp.name = "false";
         composer.allocateAndEmitBool(&temp);
         //TAL
-        composer.storeVar(&temp, offset);
+        //composer.storeVar(&temp, offset);
     } else {
         temp.name = "0";
-        composer.allocateAndEmitNum(&temp);
+        if(t->type == "int")
+            composer.allocateAndEmitNum(&temp);
+        if(t->type == "byte")
+            composer.allocateAndEmitNumB(&temp);
         composer.storeVar(&temp, offset);
     }
 }
