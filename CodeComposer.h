@@ -47,6 +47,9 @@ public:
     void storeVar(Exp* exp, int offset);
     string allocaFunctionStack();
 
+    //added
+    void testFunc(Exp* exp);
+
 };
 
 #endif //COMPIHW5_COMPOSER_H

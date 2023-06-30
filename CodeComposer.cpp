@@ -341,3 +341,9 @@ string CodeComposer::allocaFunctionStack() {
     buffer.emit(frame_base + " = alloca i32, i32 " + to_string(this->max_num_of_vars_per_func));
     return frame_base;
 }
+
+//added
+void CodeComposer::testFunc(Exp *exp) {
+    exp->reg = this->new_register();
+    buffer.emit(exp->reg + " = add i1 " + exp->name + ", 0");
+}
