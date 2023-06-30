@@ -296,10 +296,8 @@ void CodeComposer::flipLists(Exp *left, Exp *right) {
 }
 
 void CodeComposer::saveFuncArg(Exp *exp, int offset) {
-    buffer.emit(";**** saving function arg");
     string func_var = to_string( -1 * (offset + 1));
     exp->reg = "%" + func_var;
-    buffer.emit("; " + exp->reg);
 }
 
 void CodeComposer::loadVar(Exp *exp, int offset) {
