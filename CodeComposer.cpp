@@ -133,8 +133,11 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
 
             string converted_reg = new_register();
             buffer.emit(converted_reg + " = zext i8 " + reg_to_convert + " to i32");
-            
-            buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + converted_reg + ", " + the_int_one);
+
+            if(exp1->type == "byte")
+                buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + converted_reg + ", " + the_int_one);
+            if(exp2->type == "byte")
+                buffer.emit(lhs->reg + " = " + op_cmd + " i32 " + the_int_one + ", " + converted_reg);
         }
     }
     
