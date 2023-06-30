@@ -36,31 +36,21 @@ string CodeComposer::new_label(string label) {
 
 /*this function is used to emit code that uses phi to evaluate bool expressions to 0 or 1 */
 void CodeComposer::boolValEval(Exp *exp) {
+    
+    string true_label = buffer.genLabel(); //generates a label, emits "lable_x:" it and returns it.
+    int t_address = buffer.emit("br label @");
+    buffer.bpatch(exp->truelist, true_label);
+
+    string false_label = buffer.genLabel(); //generates a label, emits "lable_x:" it and returns it.
+    int f_address = buffer.emit("br label @");
+    buffer.bpatch(exp->falselist, false_label);
+
+    string end_label = buffer.genLabel();
+    bplist end = buffer.merge(buffer.makelist(bplist_pair(t_address, FIRST)),
+                               buffer.makelist(bplist_pair(f_address, FIRST)));
+    buffer.bpatch(end, end_label); //fills the jumps to end (like the jump to exit in the tirgul)
 
     exp->reg = new_register();
-
-    string true_label = new_label("PHI_TRUE_LABEL_");
-    string false_label = new_label("PHI_FALSE_LABEL_");
-    string next_label = new_label("PHI_NEXT_LABEL_");
-
-    buffer.emit("br label %" + true_label);
-    //we think this line is nedded for basic blocks stuffs. gives an error without it.
-
-    buffer.emit(true_label + ":");
-    int true_address = buffer.emit("br label @");
-
-    //TODO: instead of @ and bp, try to emit the next label directly
-    buffer.emit(false_label + ":");
-    int false_address = buffer.emit("br label @");
-    //TODO: instead of @ and bp, try to emit the next label directly
-    buffer.emit(next_label + ":");
-
-    bplist next = buffer.merge(buffer.makelist(bplist_pair(true_address, FIRST)),
-                               buffer.makelist(bplist_pair(false_address, FIRST)));
-    buffer.bpatch(exp->truelist, true_label);
-    buffer.bpatch(exp->falselist, false_label);
-    buffer.bpatch(next, next_label);
-
     buffer.emit(exp->reg + " = phi i1 [ 1, %" + true_label + "], [0, %" + false_label + "]");
 }
 
