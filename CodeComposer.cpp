@@ -100,7 +100,7 @@ void CodeComposer::allocateAndEmitBool(Exp *exp) {
     if(exp->name == "true") {
         exp->truelist = buffer.makelist(bplist_pair(address, FIRST));
     } else {
-        exp->falselist = buffer.makelist(bplist_pair(address, SECOND));
+        exp->falselist = buffer.makelist(bplist_pair(address, FIRST));
     }
 }
 
