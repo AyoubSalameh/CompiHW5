@@ -334,7 +334,7 @@ Statement::Statement(Node* n) {
         int break_address = buffer.emit("br label @");
         this->break_list = buffer.makelist(bplist_pair(break_address, FIRST));
         //TODO: next_list may be not needed, make sure
-        this->next_list = buffer.makelist(bplist_pair(break_address, FIRST));
+        //this->next_list = buffer.makelist(bplist_pair(break_address, FIRST));
     }
     if(n->name == "continue") {
         if(!(table.checkLoop())) {
