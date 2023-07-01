@@ -400,7 +400,17 @@ Statement::Statement(MarkerM *cond_marker, Exp *e,  MarkerM *body_marker, Statem
     buffer.bpatch(body->continue_list, cond_marker->name);
     buffer.bpatch(body->break_list, end_while);
     buffer.bpatch(body->next_list, end_while);
+}
 
+///added
+//statement -> call ;
+Statement::Statement(Call *c) : Node(c->type) {
+    Exp exp = Exp();
+    exp.type = c->type;
+    exp.truelist = c->truelist;
+    exp.falselist = c->falselist;
+    if(exp.type == "bool")
+        composer.boolValEval(&exp);
 }
 
 ///****************************************** STATEMENTS *******************************************
@@ -437,8 +447,10 @@ Call::Call(Node *id, ExpList *params)  : Node(id->name) {
     }
     symbol_table_entry* entry = table.get_function(id->name, par);
     this->type = entry->type;
-    string unique_name = entry->uniqe_name;
-    composer.composeAndEmitCall(this, unique_name, params, entry->params);
+    //string unique_name = entry->uniqe_name;
+    ///CHANGED
+    this->name = entry->uniqe_name;
+    composer.composeAndEmitCall(this, this->name, params, entry->params);
     /*errors(if there are any) are thrown from within get_functions*/
 }
 

@@ -283,6 +283,25 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
 
     buffer.emit(prefix + "call " + ret_type_to_emit + " @" + unique_name + "(" + args_list_to_emit + ")");
 
+    ///added
+    if(func->type == "bool") {
+        Exp e = Exp();
+        e.type == "bool";
+        e.reg = new_register();
+
+        //extending the func reg to i32 in order to to the comparison
+        string converted_reg = new_register();
+        buffer.emit(converted_reg + " = zext i1 " + func->reg + " to i32");
+        buffer.emit(e.reg + " = icmp ne i32 0, " + converted_reg);
+        //need to convert back to i1
+
+        func->reg = e.reg;
+        int address = buffer.emit("br i1 " + func->reg + ", label @, label @");
+        func->truelist = buffer.makelist(bplist_pair(address, FIRST));
+        func->falselist = buffer.makelist(bplist_pair(address, SECOND));
+    }
+    ///addition ended
+
 }
 
 void CodeComposer::flipLists(Exp *left, Exp *right) {
