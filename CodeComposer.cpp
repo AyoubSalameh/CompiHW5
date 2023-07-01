@@ -220,15 +220,19 @@ void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_n
 }
 
 void CodeComposer::composeAndEmitEndFunc(RetType *ret_type, Statements* sts) {
-    //TODO:  complete - if we have time we should save a list<statement>n statements,
-    //and check whether the last one is a return statment.
-     map<string, string> retTypesMap = {
-        {"int", "i32 0"},
-        {"byte", "i8 0" },
-        {"bool", "i1 0"},
-        {"void", "void"}};
+    string last_emitted_line = buffer.getLastEmittedLine();
+    size_t pos = last_emitted_line.find("ret ");
 
-    buffer.emit("ret " + retTypesMap[ret_type->type]);
+    if (pos == std::string::npos) {
+        map<string, string> retTypesMap = {
+            {"int", "i32 0"},
+            {"byte", "i8 0" },
+            {"bool", "i1 0"},
+            {"void", "void"}};
+
+        buffer.emit("ret " + retTypesMap[ret_type->type]);
+    }
+
     buffer.emit("}");
 }
 
