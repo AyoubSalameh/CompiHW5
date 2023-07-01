@@ -36,7 +36,7 @@ string CodeComposer::new_label(string label) {
 
 /*this function is used to emit code that uses phi to evaluate bool expressions to 0 or 1 */
 void CodeComposer::boolValEval(Exp *exp) {
-    
+
     string true_label = buffer.genLabel(); //generates a label, emits "lable_x:" it and returns it.
     int t_address = buffer.emit("br label @");
     buffer.bpatch(exp->truelist, true_label);
