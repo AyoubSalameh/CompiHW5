@@ -147,15 +147,6 @@ void CodeComposer::composeAndEmitBinop(Exp *lhs, Exp *exp1, string op, Exp *exp2
         }
     }
     
-    /*
-    //TODO might need a different emit for byte
-    //this code is for numeric surfing
-    //TODO check if we can use trunc by asking
-    if(lhs->type == "byte"){
-        string orig = lhs->reg;
-        lhs->reg = new_register();
-        buffer.emit(lhs->reg + " = trunc i32 " + orig + " to i8");
-    }*/
 }
 
 void CodeComposer::composeAndEmitRelop(Exp *lhs, Exp *exp1, string op, Exp *exp2) {
@@ -311,7 +302,6 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
 }
 
 void CodeComposer::flipLists(Exp *left, Exp *right) {
-    //TODO: might need to add bplist(right->list)
     left->truelist = right->falselist;
     left->falselist = right->truelist;
 }
