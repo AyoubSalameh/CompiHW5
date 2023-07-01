@@ -36,22 +36,27 @@ string CodeComposer::new_label(string label) {
 
 /*this function is used to emit code that uses phi to evaluate bool expressions to 0 or 1 */
 void CodeComposer::boolValEval(Exp *exp) {
+    /*for some funcky reason, using genLabel DOES WIERD SHIT with the basic blocks*/
+    buffer.emit("; inside boolValEval, exp->type = " + exp->type + ", exp->name = " + exp->name);
 
-    string true_label = buffer.genLabel(); //generates a label, emits "lable_x:" it and returns it.
-    int t_address = buffer.emit("br label @");
+    string true_label = new_label("phi_t");
+    string false_lable = new_label("phi_f");
+    string end_of_phi = new_label("phi_e");
+
+    buffer.emit(true_label + ":");
+    int tr_address = buffer.emit("br label %" + end_of_phi);
+
+    buffer.emit(false_lable + ":");
+    int fa_address = buffer.emit("br label %" + end_of_phi);
+
+    buffer.emit(end_of_phi + ":");
+
     buffer.bpatch(exp->truelist, true_label);
-
-    string false_label = buffer.genLabel(); //generates a label, emits "lable_x:" it and returns it.
-    int f_address = buffer.emit("br label @");
-    buffer.bpatch(exp->falselist, false_label);
-
-    string end_label = buffer.genLabel();
-    bplist end = buffer.merge(buffer.makelist(bplist_pair(t_address, FIRST)),
-                               buffer.makelist(bplist_pair(f_address, FIRST)));
-    buffer.bpatch(end, end_label); //fills the jumps to end (like the jump to exit in the tirgul)
+    buffer.bpatch(exp->falselist, false_lable);
 
     exp->reg = new_register();
-    buffer.emit(exp->reg + " = phi i1 [ 1, %" + true_label + "], [0, %" + false_label + "]");
+    exp->type = "bool";
+    buffer.emit(exp->reg + " = phi i1 [ 1, %" + true_label + "], [0, %" + false_lable + "]");
 }
 
 void CodeComposer::emitBranchNext(Exp* exp){
@@ -86,6 +91,7 @@ void CodeComposer::allocateAndEmitString(Exp *exp) {
 }
 
 void CodeComposer::allocateAndEmitBool(Exp *exp) {
+    buffer.emit("; inside allocateAndEmitBool, exp name = " + exp->name);
     int address = buffer.emit("br label @");
     if(exp->name == "true") {
         exp->truelist = buffer.makelist(bplist_pair(address, FIRST));
@@ -341,6 +347,7 @@ void CodeComposer::loadVar(Exp *exp, int offset) {
 void CodeComposer::storeVar(Exp *exp, int offset) {
     /*dont know how to support diffrent types on the stack, so the stack only handle i32
     and we convert it if needed.*/
+    buffer.emit("; inside storeVar, exp->type = " + exp->type + ", exp->name = " + exp->name);
     string address_ptr = new_register();
     buffer.emit(address_ptr  + " = getelementptr i32, i32* " + this->top_function_rbp + ", i32 " + to_string(offset));
     if(exp->type == "byte") {
