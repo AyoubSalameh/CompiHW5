@@ -63,6 +63,10 @@ public:
 	//print the content of the global buffer to stdout
 	void printGlobalBuffer();
 
+	/// @brief 
+	/// @return 
+	std::string getLastEmittedLine();
+
 };
 
 #endif

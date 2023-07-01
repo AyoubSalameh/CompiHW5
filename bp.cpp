@@ -119,3 +119,8 @@ bool replace(string& str, const string& from, const string& to, const BranchLabe
     str.replace(pos, from.length(), to);
     return true;
 }
+
+
+std::string CodeBuffer::getLastEmittedLine() {
+    return(this->buffer.back());
+}
