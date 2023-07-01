@@ -70,7 +70,7 @@ public:
     void open_scope(bool is_loop = false, string ret_type = ""); //open a new empty scope
     void close_scope();
     void final_check();
-    void insert_symbol(const string& n, string t, bool func = false, bool override = false,
+    string insert_symbol(const string& n, string t, bool func = false, bool override = false,
                        vector<string> p = vector<string>());
     void insert_func_args(vector<string> types, vector<string> names, string retType);
     bool symbol_exists(const symbol_table_entry& entry);    ///used only in insert

@@ -437,7 +437,8 @@ Statements::Statements(Statements* sts, Statement* st) : Node(st->name) {
 
 ///****************************************** Call *******************************************
 
-
+//Call -> ID (ExpList)
+//Call -> ID ()
 Call::Call(Node *id, ExpList *params)  : Node(id->name) {
     vector<string> par = {};
     if(params){
@@ -468,11 +469,9 @@ FuncDecl::FuncDecl(OverRide* override, RetType* rt, Node* id, Formals* params){
     }
     
     /* added a field to symbol table entry called uniqe_name*/
-    table.insert_symbol(id->name, rt->type, true, override->isOverRide, types);
+    string uniqe_func_name = table.insert_symbol(id->name, rt->type, true, override->isOverRide, types);
     table.insert_func_args(types, ids, rt->type);
     //builds vector params
-
-    string uniqe_func_name = (table.get_function(id->name, types))->uniqe_name;
     composer.composeAndEmitFuncDecl(rt,uniqe_func_name,params);
     composer.top_function_rbp = composer.allocaFunctionStack();
 

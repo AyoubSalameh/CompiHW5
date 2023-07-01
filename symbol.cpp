@@ -182,7 +182,7 @@ bool table_stack::symbol_exists(const symbol_table_entry& entry) {
     return true;
 }
 
-void table_stack::insert_symbol(const string &n, string t, bool func, bool override, vector <string> p) {
+string table_stack::insert_symbol(const string &n, string t, bool func, bool override, vector <string> p) {
     if(DEBUG){
         cout << "in insert_symbol with: " << t << ", " << n << ", is func: " <<  func << ", is override: " << override << endl; 
         cout << endl;
@@ -212,6 +212,7 @@ void table_stack::insert_symbol(const string &n, string t, bool func, bool overr
         offsets_stack.pop();
         offsets_stack.push(insert_offset + 1);
     }
+    return uniqe_name;
 }
 
 
