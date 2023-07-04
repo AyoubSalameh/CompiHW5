@@ -46,9 +46,7 @@ public:
     void loadVar(Exp* exp, int offset);
     void storeVar(Exp* exp, int offset);
     string allocaFunctionStack();
-
-    //added
-    void testFunc(Exp* exp);
+    void boolDefaultVal(Exp* exp);
 
 };
 

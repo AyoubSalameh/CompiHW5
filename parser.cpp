@@ -210,23 +210,15 @@ Statement::Statement(Type *t, Node *id) {
     int offset = table.get_variable(id->name)->offset;
     Exp temp;
     temp.type = t->type;
-    if(false/*t->type == "bool"*/) {
-        temp.name = "false";
-        composer.allocateAndEmitBool(&temp);
-        //TAL
-        //composer.storeVar(&temp, offset);
-    } else {
-        temp.name = "0";
-        if(t->type == "int")
-            composer.allocateAndEmitNum(&temp);
-        else if(t->type == "byte")
-            composer.allocateAndEmitNumB(&temp);
-        //added
-        else if (t->type == "bool") {
-            composer.testFunc(&temp);
-        }
-        composer.storeVar(&temp, offset);
+    temp.name = "0";
+    if(t->type == "int")
+        composer.allocateAndEmitNum(&temp);
+    else if(t->type == "byte")
+        composer.allocateAndEmitNumB(&temp);
+    else if (t->type == "bool") {
+        composer.boolDefaultVal(&temp);
     }
+    composer.storeVar(&temp, offset);
 }
 
 //statement -> Type ID = Exp ;

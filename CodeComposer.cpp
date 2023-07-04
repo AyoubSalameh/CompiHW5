@@ -365,8 +365,7 @@ string CodeComposer::allocaFunctionStack() {
     return frame_base;
 }
 
-//added
-void CodeComposer::testFunc(Exp *exp) {
+void CodeComposer::boolDefaultVal(Exp *exp) {
     exp->reg = this->new_register();
     buffer.emit(exp->reg + " = add i1 " + exp->name + ", 0");
 }
