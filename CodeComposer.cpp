@@ -195,7 +195,6 @@ void CodeComposer::composeAndEmitOrAnd(Exp *lhs, Exp *exp1, string op, Exp *exp2
 }
 
 void CodeComposer::composeAndEmitFuncDecl(RetType *ret_type, string uniqe_func_name, Formals *params) {
-    /*not sure if everything shuld be string or i32*/
     map<string, string> typesMap = {
     {"int", "i32"},
     {"byte", "i8" },
@@ -284,7 +283,6 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
 
     buffer.emit(prefix + "call " + ret_type_to_emit + " @" + unique_name + "(" + args_list_to_emit + ")");
 
-    ///added
     if(func->type == "bool") {
         Exp e = Exp();
         e.type == "bool";
@@ -301,7 +299,6 @@ void CodeComposer::composeAndEmitCall(Call* func, string unique_name ,ExpList* a
         func->truelist = buffer.makelist(bplist_pair(address, FIRST));
         func->falselist = buffer.makelist(bplist_pair(address, SECOND));
     }
-    ///addition ended
 
 }
 

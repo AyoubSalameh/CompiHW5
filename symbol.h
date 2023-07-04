@@ -51,10 +51,6 @@ public:
     
     symbol_table_entry* get_variable_in_scope(const string& name);
     
-    /*unused functions*/
-    //bool symbol_declared_in_scope(const symbol_table_entry& entry);
-    //symbol_table_entry* getSymbol()
-    //symbol_table_entry* get_symbol_entry(const string& symbol_name); ///this is mainly to check main
 };
 
 ///********************* TABLE STACK ********************************///
@@ -79,9 +75,6 @@ public:
     symbol_table_entry* get_function(const string& name, vector<string> params = {});
     bool checkLoop();
     string get_closest_func_return_type();
-
-    /*unused functions*/
-    //bool symbol_declared(const symbol_table_entry& entry);
 
 };
 

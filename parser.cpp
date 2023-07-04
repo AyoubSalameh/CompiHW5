@@ -183,17 +183,8 @@ ExpList::ExpList(Exp *e) : Node(e->name) {
 //ExpList -> ExpCOMMA ExpList  
 ExpList::ExpList(ExpComma *ec, ExpList *list) : Node(ec->my_exp->name) {
     Exp* e = ec->my_exp;
-    //if(e->type == "bool") {
-    //    composer.boolValEval(e);
-    //}
     this->expressions = list->expressions;
     this->expressions.insert(this->expressions.begin(), *e);
-    /*
-    this->expressions.push_back(*e);
-    for( auto& item : list->expressions){
-        this->expressions.push_back(item);
-    }
-    */
 }
 
 ///****************************************** STATEMENT *******************************************
@@ -325,8 +316,6 @@ Statement::Statement(Node* n) {
         }
         int break_address = buffer.emit("br label @");
         this->break_list = buffer.makelist(bplist_pair(break_address, FIRST));
-        //TODO: next_list may be not needed, make sure
-        //this->next_list = buffer.makelist(bplist_pair(break_address, FIRST));
     }
     if(n->name == "continue") {
         if(!(table.checkLoop())) {
@@ -440,8 +429,6 @@ Call::Call(Node *id, ExpList *params)  : Node(id->name) {
     }
     symbol_table_entry* entry = table.get_function(id->name, par);
     this->type = entry->type;
-    //string unique_name = entry->uniqe_name;
-    ///CHANGED
     this->name = entry->uniqe_name;
     composer.composeAndEmitCall(this, this->name, params, entry->params);
     /*errors(if there are any) are thrown from within get_functions*/

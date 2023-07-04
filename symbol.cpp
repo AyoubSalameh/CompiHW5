@@ -123,40 +123,6 @@ symbol_table_entry* symbol_table_scope::get_variable_in_scope(const string &name
 }
 
 
-/*bool symbol_table_scope::symbol_declared_in_scope(const symbol_table_entry &entry) {
-    if(entry.is_func == false) {
-        for(auto it = entries.begin(); it != entries.end(); it++) {
-            if(entry.name == it->name && it->is_func == false)
-                return true;
-        }
-    }
-    bool found_name = false;
-    int counter = 0;
-    if(entry.is_func == true) {
-        for(auto it = entries.begin(); it != entries.end(); it++) {
-                if(entry.name == it->name) {
-                    found_name = true;
-                    bool answer = are_params_equal(entry.params, it->params);
-                    if(answer == true)
-                        counter++;
-                }
-        }
-        if(counter > 1) {
-            output::errorAmbiguousCall(yylineno, entry.name);
-            exit(0);
-        }
-        if(counter == 1)
-            return true;
-        if(counter == 0 && found_name == true){
-            output::errorPrototypeMismatch(yylineno, entry.name);
-            exit(0);
-        }
-    }
-    return false;
-}*/
-
-
-
 
 ///********************* TABLE STACK ********************************///
 table_stack::table_stack(){
@@ -360,26 +326,3 @@ string table_stack::get_closest_func_return_type(){
     }
     return "not_nested_in_func";
 }
-
-
-/*
-this function was not used
-
-///in inserting, we made sure that a varibale appears only once, so its enough for use to check if a variable exists in one scope
-///havent used for variable. might use for functions
-bool table_stack::symbol_declared(const symbol_table_entry &entry) {
-    for(auto it = this->tables_stack.begin(); it != this->tables_stack.end(); it++) {
-        bool answer = it->symbol_declared_in_scope(entry);
-        if(answer == true)
-            return true;
-    }
-    if(entry.is_func == false) {
-        output::errorUndef(yylineno, entry.name);
-        exit(0);
-    }
-    if(entry.is_func) {
-        output::errorUndefFunc(yylineno, entry.name);
-    }
-    return false;
-}
-*/
